@@ -53,6 +53,16 @@ export async function signUp(email, password, fullName, workspaceName) {
   return { data, error: null, pendingWorkspace: workspaceName };
 }
 
+export async function createWorkspaceIfNeeded() {
+  const workspaceName = localStorage.getItem('pendingWorkspace');
+  if (!workspaceName) return;
+  const { error } = await supabase.rpc('create_workspace', { workspace_name: workspaceName });
+  if (!error) {
+    localStorage.removeItem('pendingWorkspace');
+    localStorage.removeItem('pendingFullName');
+  }
+}
+
 export async function signOut() {
   await supabase.auth.signOut();
 }

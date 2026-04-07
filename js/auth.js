@@ -1,5 +1,5 @@
 import { loadData, loadWorkspaces } from './storage.js';
-import { supabase, signIn, signUp, signOut, getSession, getProfile, getInviteByToken, acceptInvite } from './supabase.js';
+import { supabase, signIn, signUp, signOut, getSession, getProfile, getInviteByToken, acceptInvite, createWorkspaceIfNeeded } from './supabase.js';
 import { AppState } from './state.js';
 
 /* ══════════════════════════════════════════════════
@@ -158,6 +158,7 @@ export async function renderAuthScreen(mode = 'login') {
     btn.disabled = true; btn.textContent = 'Signing in…';
     const { error } = await signIn(email, password);
     if (error) { showError(errEl, error.message); btn.disabled = false; btn.textContent = 'Sign In'; return; }
+    await createWorkspaceIfNeeded();
     const profile = await getProfile();
     const session = await getSession();
     AppState.currentUser = session.user;
@@ -203,9 +204,10 @@ export async function renderAuthScreen(mode = 'login') {
 
     if (signUpError) { showError(errEl, signUpError.message); btn.disabled = false; btn.textContent = 'Create Account'; return; }
     // Store org name temporarily for workspace creation after confirmation
-    localStorage.setItem('pendingWorkspace', orgName);
+    localStorage.setItem('pendingWorkspace', orgName);fredirectTo: 'https://strifesafety-dashboard.onrender.com'
+    localStorage.setItem('pendingFullName', fullName);
     // Show success message — user must confirm email before signing in
-    document.getElementById('authBox').innerHTML = `
+    screen.querySelector('.auth-card').innerHTML = `
       <div style="text-align:center;padding:32px 24px">
         <div style="font-size:48px;margin-bottom:16px">📧</div>
         <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:12px">Check your email!</h2>
