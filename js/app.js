@@ -331,6 +331,17 @@ window.__initApp = initApp;
 
 /* ── Bootstrap — check auth first ── */
 (async () => {
+  // Check for password recovery token before anything else
+  const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+  const isRecovery = hashParams.get('type') === 'recovery';
+
+  if (isRecovery) {
+    // Set the session from the recovery token first
+    await supabase.auth.getSession();
+    renderAuthScreen('login');
+    return;
+  }
+
   const authed = await initAuth();
   if (!authed) {
     renderAuthScreen('login');
