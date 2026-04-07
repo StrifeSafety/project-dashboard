@@ -50,27 +50,10 @@ export async function signUp(email, password, fullName, workspaceName) {
   });
   if (error) return { data, error };
 
-  // Create workspace
-  const { data: workspace, error: wsError } = await supabase
-    .from('workspaces')
-    .insert({ name: workspaceName })
-    .select()
-    .single();
+  // Create workspace using server-side function to bypass RLS
+  const { data: wsId, error: wsError } = await supabase
+    .rpc('create_workspace', { workspace_name: workspaceName });
   if (wsError) return { data, error: wsError };
-
-  // Add user as owner of workspace
-  await supabase.from('workspace_members').insert({
-    workspace_id: workspace.id,
-    user_id: data.user.id,
-    role: 'owner'
-  });
-
-  // Update profile
-  await supabase.from('profiles').update({
-    full_name: fullName,
-    organisation_id: workspace.id,
-    role: 'owner'
-  }).eq('id', data.user.id);
 
   return { data, error: null };
 }
