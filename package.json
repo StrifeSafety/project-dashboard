@@ -1,0 +1,18 @@
+{
+  "name": "project-dashboard",
+  "version": "1.0.0",
+  "description": "A client-side project management dashboard built with plain HTML, CSS, and JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "vite": "^8.0.3"
+  }
+}

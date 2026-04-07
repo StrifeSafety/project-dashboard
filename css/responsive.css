@@ -1,0 +1,151 @@
+/* ══════════════════════════════════════════════════
+   RESPONSIVE STYLES
+   ══════════════════════════════════════════════════ */
+
+/* ── TABLET (≤1024px) ── */
+@media(max-width:1024px){
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .col-2{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .pb-meta-grid{grid-template-columns:repeat(2,1fr)}
+  .fg-grid{grid-template-columns:1fr}
+  .sidebar{width:180px;min-width:180px}
+  .project-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .stk-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  .doc-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .page-banner{flex-wrap:wrap}
+  .page-banner > div:last-child{margin-left:0}
+  .pb-hero-top{flex-direction:column}
+  .pb-title{font-size:22px}
+}
+
+/* ── MOBILE (≤768px) ── */
+@media(max-width:768px){
+  .topnav{padding:0 12px;gap:0}
+  .logo{padding-right:12px;font-size:14px}
+  .nav-tabs{gap:0}
+  .nav-tab{padding:0 10px;font-size:12px}
+  .nav-right{padding-left:8px;margin-left:4px;gap:4px}
+  .subnav{padding:0 12px;height:36px}
+
+  .sidebar{
+    position:fixed;
+    left:0;top:90px;bottom:0;
+    z-index:180;
+    transform:translateX(-100%);
+    width:240px;
+    box-shadow:4px 0 24px rgba(0,0,0,.5);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-toggle{display:flex;align-items:center;justify-content:center}
+
+  .main{height:calc(100vh - 88px)}
+  .content{width:100%}
+
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .pb-meta-grid{grid-template-columns:1fr 1fr}
+
+  /* Tables: horizontal scroll */
+  .table-card{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:600px}
+
+  /* Kanban columns narrower */
+  .kb-col{min-width:230px;max-width:230px}
+
+  .page-banner{padding:16px;flex-direction:column;align-items:flex-start;gap:10px}
+  .page-banner-icon{font-size:24px}
+  .page-banner h2{font-size:17px}
+
+  .pb-hero{padding:16px 18px}
+  .pb-title{font-size:20px}
+
+  .modal{padding:18px;width:100%;max-width:calc(100vw - 24px);border-radius:12px}
+
+  .project-grid{grid-template-columns:1fr}
+  .stk-grid{grid-template-columns:1fr}
+  .doc-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+
+  /* Meeting cards stack nicely */
+  .meeting-card{flex-direction:column;align-items:flex-start;gap:10px}
+
+  /* Gantt: scrollable */
+  .gantt-label-cell{width:140px;min-width:140px;font-size:11px}
+}
+
+/* ── SMALL MOBILE (≤480px) ── */
+@media(max-width:480px){
+  .topnav{height:48px}
+  .logo{font-size:13px;padding-right:8px;gap:5px;border-right:none;margin-right:0}
+  .logo-dot{width:6px;height:6px}
+  .nav-tabs{display:none}
+  .nav-right{border:none;margin:0;padding:0;margin-left:auto}
+  .subnav{top:48px;overflow-x:auto;gap:0}
+  .subnav-tab{padding:4px 8px;font-size:11px}
+
+  /* Show tabs in subnav area instead */
+  .topnav::after{
+    content:'';display:none;
+  }
+
+  .main{height:calc(100vh - 84px)}
+  .sidebar{top:84px}
+
+  .dash-grid{grid-template-columns:1fr}
+
+  .kpi-value{font-size:20px}
+
+  .pb-meta-grid{grid-template-columns:1fr}
+
+  .page-banner{padding:12px}
+  .page-banner h2{font-size:15px}
+  .page-banner p{font-size:12px}
+
+  .modal{padding:14px}
+
+  .mcal-grid{font-size:9px}
+  .mcal-cell{min-height:52px;padding:4px}
+  .mcal-event{font-size:8px;padding:1px 3px}
+}
+
+/* ── NAV DROPDOWN FOR SMALL SCREENS ── */
+@media(max-width:480px){
+  /* Create a mobile nav menu */
+  .nav-tabs.mobile-open{
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    top:48px;left:0;right:0;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    z-index:250;
+    padding:8px;
+    gap:2px;
+    box-shadow:0 8px 24px rgba(0,0,0,.5);
+  }
+  .nav-tabs.mobile-open .nav-tab{
+    height:40px;
+    border-bottom:none;
+    border-radius:var(--rs);
+  }
+  .nav-tabs.mobile-open .nav-tab.active{
+    background:var(--accent-bg);
+    border-bottom:none;
+  }
+
+  /* Mobile menu toggle replaces the hidden tabs */
+  .mobile-nav-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:none;
+    border:none;
+    color:var(--text2);
+    font-size:18px;
+    cursor:pointer;
+    padding:0 8px;
+    height:48px;
+  }
+}
+@media(min-width:481px){
+  .mobile-nav-toggle{display:none!important}
+}
