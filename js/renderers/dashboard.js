@@ -217,7 +217,7 @@ export function renderDashboard() {
   return `
   <div style="padding:20px 24px">
     <div class="page-banner">
-      <div class="page-banner-icon"><img src="assets/Project Book Image.png" style="width:120px;height:120px;object-fit:contain;" /></div>
+      <div class="page-banner-icon"><img src="/Project Book Image.png" style="width:120px;height:120px;object-fit:contain;" /></div>
       <div>
         <h2>Welcome back!</h2>
         <p>A centralised workspace designed to support the effective management of your projects.</p>
