@@ -22,6 +22,11 @@ export async function renderAuthScreen(mode = 'login') {
   const hashParts = window.location.hash.split('/');
   const inviteToken = hashParts[0] === '#invite' ? hashParts[1] : null;
 
+  // Check for password recovery token in URL
+  const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+  const isRecovery = hashParams.get('type') === 'recovery';
+  const accessToken = hashParams.get('access_token');
+
   const screen = document.createElement('div');
   screen.className = 'auth-screen';
   screen.id = 'authScreen';
@@ -40,6 +45,7 @@ export async function renderAuthScreen(mode = 'login') {
         <div class="auth-field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/></div>
         <div class="auth-field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/></div>
         <button class="auth-btn" id="loginBtn">Sign In</button>
+        <div class="auth-switch" style="margin-top:8px"><a id="showForgot" style="cursor:pointer">Forgot password?</a></div>
         <div class="auth-switch">Don't have an account? <a id="showSignup">Create one</a></div>
       </div>
 
@@ -59,6 +65,54 @@ export async function renderAuthScreen(mode = 'login') {
 
   document.body.appendChild(screen);
 
+  // Handle password recovery flow
+  if (isRecovery && accessToken) {
+    screen.innerHTML = `
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="auth-logo-dot"></div>
+          <div class="auth-logo-text">Project Dashboard</div>
+        </div>
+        <div class="auth-title">Reset Password</div>
+        <div class="auth-sub">Enter your new password below.</div>
+        <div class="auth-error" id="resetError"></div>
+        <div class="auth-field"><label>New Password</label><input type="password" id="resetPassword" placeholder="Min. 6 characters" autocomplete="new-password"/></div>
+        <div class="auth-field"><label>Confirm Password</label><input type="password" id="resetPasswordConfirm" placeholder="Repeat password" autocomplete="new-password"/></div>
+        <button class="auth-btn" id="resetBtn">Update Password</button>
+      </div>
+    `;
+    screen.querySelector('#resetBtn').addEventListener('click', async () => {
+      const btn = screen.querySelector('#resetBtn');
+      const errEl = screen.querySelector('#resetError');
+      const password = screen.querySelector('#resetPassword').value;
+      const confirm = screen.querySelector('#resetPasswordConfirm').value;
+      if (!password || !confirm) { showError(errEl, 'Please fill in both fields.'); return; }
+      if (password.length < 6) { showError(errEl, 'Password must be at least 6 characters.'); return; }
+      if (password !== confirm) { showError(errEl, 'Passwords do not match.'); return; }
+      btn.disabled = true; btn.textContent = 'Updating…';
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) { showError(errEl, error.message); btn.disabled = false; btn.textContent = 'Update Password'; return; }
+      showError(errEl, '✓ Password updated! Signing you in…');
+      errEl.style.background = 'rgba(62,207,142,.1)';
+      errEl.style.borderColor = 'var(--green)';
+      errEl.style.color = 'var(--green)';
+      setTimeout(async () => {
+        const profile = await getProfile();
+        const session = await getSession();
+        AppState.currentUser = session.user;
+        AppState.currentProfile = profile;
+        removeAuthScreen();
+        AppState.currentTab = 'dashboard';
+        AppState.currentSubtab = 0;
+        history.replaceState({ tab: 'dashboard', sub: 0, briefingId: null }, '', '#dashboard');
+        await loadWorkspaces();
+        await loadData();
+        window.__initApp();
+      }, 1500);
+    });
+    return;
+  }
+
   // Toggle between login and signup
   screen.querySelector('#showSignup').addEventListener('click', () => {
     screen.querySelector('#authLogin').style.display = 'none';
@@ -69,12 +123,25 @@ export async function renderAuthScreen(mode = 'login') {
     screen.querySelector('#authLogin').style.display = '';
   });
 
-  // If invite token present, show signup by default and update title
+  // Forgot password handler
+  screen.querySelector('#showForgot')?.addEventListener('click', async () => {
+    const email = screen.querySelector('#loginEmail').value.trim();
+    const errEl = screen.querySelector('#loginError');
+    if (!email) { showError(errEl, 'Enter your email above first.'); return; }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    if (error) { showError(errEl, error.message); return; }
+    showError(errEl, '✓ Password reset email sent. Check your inbox.');
+    errEl.style.background = 'rgba(62,207,142,.1)';
+    errEl.style.borderColor = 'var(--green)';
+    errEl.style.color = 'var(--green)';
+  });
+
+  // If invite token present, show signup by default
   if (inviteToken) {
     screen.querySelector('#authLogin').style.display = 'none';
     screen.querySelector('#authSignup').style.display = '';
-    // Pre-fill email if available from invite
-    const { getInviteByToken } = await import('./supabase.js');
     const { data: invite } = await getInviteByToken(inviteToken);
     if (invite?.email) {
       screen.querySelector('#signupEmail').value = invite.email;
@@ -120,7 +187,6 @@ export async function renderAuthScreen(mode = 'login') {
 
     let signUpError = null;
     if (inviteToken) {
-      // Sign up via invite — join existing org
       const { data, error } = await supabase.auth.signUp({
         email, password,
         options: { data: { full_name: fullName } }
@@ -138,7 +204,7 @@ export async function renderAuthScreen(mode = 'login') {
     if (signUpError) { showError(errEl, signUpError.message); btn.disabled = false; btn.textContent = 'Create Account'; return; }
 
     const successMsg = inviteToken
-      ? '✓ Account created! You can now sign in.'
+      ? '✓ Account joined! Signing you in…'
       : '✓ Account created! Check your email to confirm, then sign in.';
     showError(errEl, successMsg);
     errEl.style.background = 'rgba(62,207,142,.1)';
