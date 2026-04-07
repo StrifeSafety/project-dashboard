@@ -150,7 +150,8 @@ export async function openDetail(type, obj) {
 /* ── ADD / EDIT FORMS ── */
 export function openAdd() {
   const tab = AppState.currentTab;
-  if (tab === 'tasks' || tab === 'dashboard') openAddForm('task');
+  if (tab === 'tasks') openAddForm('task');
+  else if (tab === 'dashboard') openAddForm('project');
   else if (tab === 'projects') openAddForm('project');
   else if (tab === 'documents') openAddForm('doc');
   else if (tab === 'budgets') openAddForm('budget');
