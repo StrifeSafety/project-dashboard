@@ -202,6 +202,18 @@ export async function renderAuthScreen(mode = 'login') {
     }
 
     if (signUpError) { showError(errEl, signUpError.message); btn.disabled = false; btn.textContent = 'Create Account'; return; }
+    // Show success message — user must confirm email before signing in
+    document.getElementById('authBox').innerHTML = `
+      <div style="text-align:center;padding:32px 24px">
+        <div style="font-size:48px;margin-bottom:16px">📧</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:12px">Check your email!</h2>
+        <p style="color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:24px">
+          We've sent an activation link to <strong>${email}</strong>.<br>
+          Click the link in the email to activate your account and sign in.
+        </p>
+        <p style="color:var(--text3);font-size:12px">Didn't receive it? Check your spam folder.</p>
+      </div>`;
+    return;
 
     const successMsg = inviteToken
       ? '✓ Account joined! Signing you in…'
