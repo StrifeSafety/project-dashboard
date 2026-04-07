@@ -202,6 +202,8 @@ export async function renderAuthScreen(mode = 'login') {
     }
 
     if (signUpError) { showError(errEl, signUpError.message); btn.disabled = false; btn.textContent = 'Create Account'; return; }
+    // Store org name temporarily for workspace creation after confirmation
+    localStorage.setItem('pendingWorkspace', orgName);
     // Show success message — user must confirm email before signing in
     document.getElementById('authBox').innerHTML = `
       <div style="text-align:center;padding:32px 24px">

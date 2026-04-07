@@ -49,13 +49,8 @@ export async function signUp(email, password, fullName, workspaceName) {
     options: { data: { full_name: fullName } }
   });
   if (error) return { data, error };
-
-  // Create workspace using server-side function to bypass RLS
-  const { data: wsId, error: wsError } = await supabase
-    .rpc('create_workspace', { workspace_name: workspaceName });
-  if (wsError) return { data, error: wsError };
-
-  return { data, error: null };
+  // Workspace will be created on first sign in after email confirmation
+  return { data, error: null, pendingWorkspace: workspaceName };
 }
 
 export async function signOut() {
