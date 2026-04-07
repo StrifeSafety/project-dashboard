@@ -178,9 +178,14 @@ window.adminDeleteWorkspace = async (id, name) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to delete the workspace "${name}" and ALL its data? This cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
+    await supabase.from('profiles').update({ organisation_id: null }).eq('organisation_id', id);
+    await supabase.from('invites').delete().eq('workspace_id', id);
+    await supabase.from('workspace_members').delete().eq('workspace_id', id);
     await supabase.from('workspaces').delete().eq('id', id);
     toast('🗑 Workspace deleted');
+    await loadWorkspaces();
     renderContent();
+    renderWorkspaceSwitcher();
   };
   document.getElementById('deleteModal').classList.add('open');
 };
