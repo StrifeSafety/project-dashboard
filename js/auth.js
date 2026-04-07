@@ -129,7 +129,7 @@ export async function renderAuthScreen(mode = 'login') {
     const errEl = screen.querySelector('#loginError');
     if (!email) { showError(errEl, 'Enter your email above first.'); return; }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname
+      redirectTo: 'https://project-dashboard-8iqo.onrender.com'
     });
     if (error) { showError(errEl, error.message); return; }
     showError(errEl, '✓ Password reset email sent. Check your inbox.');
