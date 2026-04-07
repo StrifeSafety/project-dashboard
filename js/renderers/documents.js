@@ -413,20 +413,25 @@ function bindDocActions() {
 
   /* Delete */
   document.querySelectorAll('[data-delete-id]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      if (!confirm('Delete this document and its file? This cannot be undone.')) return;
+    btn.addEventListener('click', () => {
       const id = btn.dataset.deleteId;
       const fileName = btn.dataset.deleteFile;
-      try {
-        await deleteDocument(id, fileName);
-        const row = btn.closest('tr');
-        const nextRow = row.nextElementSibling;
-        if (nextRow && nextRow.dataset.previewRow) nextRow.remove();
-        row.remove();
-      } catch (err) {
-        console.error('Delete error:', err);
-        alert('Delete failed: ' + err.message);
-      }
+      openDeleteModal('doc', id, 'this document');
+      // Override the confirm button to also delete from Supabase storage
+      const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+      confirmBtn.onclick = async () => {
+        closeDeleteModal();
+        try {
+          await deleteDocument(id, fileName);
+          const row = btn.closest('tr');
+          const nextRow = row.nextElementSibling;
+          if (nextRow && nextRow.dataset.previewRow) nextRow.remove();
+          row.remove();
+        } catch (err) {
+          console.error('Delete error:', err);
+          alert('Delete failed: ' + err.message);
+        }
+      };
     });
   });
 }
