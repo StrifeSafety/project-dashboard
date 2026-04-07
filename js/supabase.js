@@ -7,7 +7,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL = 'https://vyywqghyzyjefbdwiyob.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5eXdxZ2h5enlqZWZiZHdpeW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODY4OTcsImV4cCI6MjA5MDg2Mjg5N30.dhT_2tpbeQHytBTl992rMTKHz1e43bMHWKy3Rh8r4dI';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    flowType: 'implicit'
+  }
+});
 
 /* ── Auth helpers ── */
 export async function getSession() {
