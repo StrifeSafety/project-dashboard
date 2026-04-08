@@ -51,7 +51,7 @@ export function filterTasks() {
   if (tb) tb.innerHTML = renderTaskRows(list);
 }
 
-export function renderTasks(sub) {
+export async function renderTasks(sub) {
   let list = [...DATA.tasks];
   if (AppState.sbProject) list = list.filter(t => t.project === AppState.sbProject);
   if (AppState.sbStatus) list = list.filter(t => t.status === AppState.sbStatus);

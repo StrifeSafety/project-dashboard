@@ -6,7 +6,7 @@ import { initCompletionChart, initBudgetChart, initDonutChart } from './dashboar
    RENDERER — Statistics
    ══════════════════════════════════════════════════ */
 
-export function renderStatistics(sub) {
+export async function renderStatistics(sub) {
   const tasks = DATA.tasks, projects = DATA.projects, budgets = DATA.budgets, meetings = DATA.meetings, stk = DATA.stakeholders;
   const done = tasks.filter(t => t.status === 'Complete').length;
   const inProg = tasks.filter(t => t.status === 'In Progress').length;

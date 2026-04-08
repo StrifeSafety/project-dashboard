@@ -7,7 +7,7 @@ import { openDetail, openAddForm } from '../components/modal.js';
    RENDERER — Stakeholders
    ══════════════════════════════════════════════════ */
 
-export function renderStakeholders(sub) {
+export async function renderStakeholders(sub) {
   let list = [...DATA.stakeholders];
   if (AppState.sbProject) list = list.filter(s => s.project === AppState.sbProject);
   if (AppState.sbStatus) list = list.filter(s => s.category === AppState.sbStatus);

@@ -327,7 +327,7 @@ export async function renderDocuments(sub) {
         file_size: file.size,
         workspace_id: AppState.currentWorkspaceId,
       });
-      renderDocuments(sub);
+      document.getElementById('contentArea').innerHTML = await renderDocuments(sub);
     } catch (err) {
       console.error('Upload error:', err);
       alert('Upload failed: ' + err.message);

@@ -8,7 +8,7 @@ import { renderContent, switchTab } from '../router.js';
    RENDERER — Project Briefing Page
    ══════════════════════════════════════════════════ */
 
-export function openProjectBriefing(id) {
+export async function openProjectBriefing(id) {
   if (AppState.currentBriefingId !== id) {
     AppState.ganttRangeStart = null;
     AppState.ganttRangeEnd = null;
@@ -18,7 +18,7 @@ export function openProjectBriefing(id) {
   }
   AppState.currentBriefingId = id;
   history.pushState({ tab: 'projects', sub: 0, briefingId: id }, '', `#projects/briefing/${id}`);
-  document.getElementById('contentArea').innerHTML = renderProjectBriefing(id);
+  document.getElementById('contentArea').innerHTML = await renderProjectBriefing(id);
 }
 
 export function openAddTaskForProject(projectName) {
@@ -168,7 +168,7 @@ export function renderMeetingsBox(projectName, pid) {
 }
 
 /* ── MAIN BRIEFING RENDER ── */
-export function renderProjectBriefing(id) {
+export async function renderProjectBriefing(id) {
   const p = DATA.projects.find(x => x.id === id);
   if (!p) return `<div style="padding:40px;color:var(--text3)">Project not found.</div>`;
 

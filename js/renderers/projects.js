@@ -8,7 +8,7 @@ import { openAddForm, openEditForm } from '../components/modal.js';
    RENDERER — Projects
    ══════════════════════════════════════════════════ */
 
-export function renderProjects(sub) {
+export async function renderProjects(sub) {
   let list = AppState.sbProject ? DATA.projects.filter(p => p.name === AppState.sbProject) : [...DATA.projects];
   if (AppState.sbStatus) list = list.filter(p => p.status === AppState.sbStatus);
   if (sub === 0) list = list.filter(p => p.active && !p.completed);

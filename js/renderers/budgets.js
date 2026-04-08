@@ -7,7 +7,7 @@ import { openDetail, openAddForm } from '../components/modal.js';
    RENDERER — Budgets
    ══════════════════════════════════════════════════ */
 
-export function renderBudgets(sub) {
+export async function renderBudgets(sub) {
   let list = [...DATA.budgets];
   if (AppState.sbProject) list = list.filter(b => b.project === AppState.sbProject);
   if (AppState.sbStatus) {

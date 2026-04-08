@@ -7,7 +7,7 @@ import { openDetail, openAddForm } from '../components/modal.js';
    RENDERER — Meetings
    ══════════════════════════════════════════════════ */
 
-export function renderMeetings(sub) {
+export async function renderMeetings(sub) {
   let list = [...DATA.meetings].sort((a, b) => a.date > b.date ? -1 : 1);
   if (AppState.sbProject) list = list.filter(m => m.project === AppState.sbProject);
   if (AppState.sbStatus) list = list.filter(m => m.type === AppState.sbStatus);

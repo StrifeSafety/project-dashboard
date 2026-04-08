@@ -197,7 +197,7 @@ export function initDonutChart() {
   });
 }
 
-export function renderDashboard() {
+export async function renderDashboard() {
   const allTasks = DATA.tasks, projects = DATA.projects;
   const done = allTasks.filter(t => t.status === 'Complete').length;
   const inProg = allTasks.filter(t => t.status === 'In Progress').length;

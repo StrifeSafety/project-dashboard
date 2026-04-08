@@ -100,17 +100,17 @@ export async function renderContent() {
   const sub = AppState.currentSubtab;
 
   if (tab === 'projects' && AppState.currentBriefingId) {
-    ca.innerHTML = renderProjectBriefing(AppState.currentBriefingId);
+    ca.innerHTML = await renderProjectBriefing(AppState.currentBriefingId);
     return;
   }
-  if (tab === 'dashboard') ca.innerHTML = renderDashboard();
-  else if (tab === 'projects') ca.innerHTML = renderProjects(sub);
-  else if (tab === 'documents') renderDocuments(sub);
-  else if (tab === 'tasks') ca.innerHTML = renderTasks(sub);
-  else if (tab === 'budgets') ca.innerHTML = renderBudgets(sub);
-  else if (tab === 'stakeholders') ca.innerHTML = renderStakeholders(sub);
-  else if (tab === 'meetings') ca.innerHTML = renderMeetings(sub);
-  else if (tab === 'statistics') ca.innerHTML = renderStatistics(sub);
+  if (tab === 'dashboard') ca.innerHTML = await renderDashboard();
+  else if (tab === 'projects') ca.innerHTML = await renderProjects(sub);
+  else if (tab === 'documents') await renderDocuments(sub);
+  else if (tab === 'tasks') ca.innerHTML = await renderTasks(sub);
+  else if (tab === 'budgets') ca.innerHTML = await renderBudgets(sub);
+  else if (tab === 'stakeholders') ca.innerHTML = await renderStakeholders(sub);
+  else if (tab === 'meetings') ca.innerHTML = await renderMeetings(sub);
+  else if (tab === 'statistics') ca.innerHTML = await renderStatistics(sub);
   else if (tab === 'team') ca.innerHTML = await renderTeam(sub);
   else if (tab === 'admin') ca.innerHTML = await renderAdmin(sub);
 
