@@ -302,7 +302,7 @@ export async function renderDashboard() {
           <table><thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Tasks</th></tr></thead>
           <tbody>${projects.slice(0, 6).map(p => {
     const s = getProjectStats(p, DATA.tasks, DATA.budgets);
-    return `<tr onclick="switchTab('projects')">
+    return `<tr onclick="App.switchTab('projects')">
               <td class="td-main"><span style="display:flex;align-items:center;gap:6px"><span class="pdot" style="background:${pColor(p.name)}"></span>${p.name}</span></td>
               <td>${projStatusBadge(p.status)}</td>
               <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${s.pct}%;background:${pCol(s.pct)}"></div></div><span class="prog-pct">${s.pct}%</span></div></td>

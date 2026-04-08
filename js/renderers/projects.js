@@ -82,7 +82,7 @@ export async function renderProjects(sub) {
           </div>
         </div>`;
   }).join('')}
-      <div class="project-card" style="border-style:dashed;cursor:pointer;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px" onclick="openAddForm('project')">
+      <div class="project-card" style="border-style:dashed;cursor:pointer;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px" onclick="App.openAddForm('project')">
         <div style="font-size:28px;color:var(--text3)">+</div>
         <div style="font-size:13px;color:var(--text3)">New Project</div>
       </div>

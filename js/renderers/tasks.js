@@ -12,7 +12,7 @@ export function renderTaskRows(list) {
   return list.map(t => {
     const linkedBudget = t.linkedBudgetId ? DATA.budgets.find(b => b.id === t.linkedBudgetId) : null;
     return `
-    <tr onclick="openDetail('task',${safeJSON(t)})" ${isOverdue(t) ? 'style="border-left:2px solid var(--red)"' : ''}>
+    <tr onclick="App.openDetail('task',${safeJSON(t)})" ${isOverdue(t) ? 'style="border-left:2px solid var(--red)"' : ''}>
       <td class="td-main"><span>${t.name}</span></td>
       <td><span class="ptag"><span class="pdot" style="background:${pColor(t.project)}"></span>${t.project || '—'}</span></td>
       <td>${statusBadge(t)}</td>
@@ -59,9 +59,9 @@ export async function renderTasks(sub) {
   const toolbarHTML = `
     <div class="task-toolbar-sticky" style="border-radius:var(--r) var(--r) 0 0">
       <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;flex-wrap:wrap">
-        <div class="search-wrap" style="max-width:240px"><span class="search-icon">🔍</span><input placeholder="Search tasks…" id="tsearch" oninoninput="App.filterTasks()"put="filterTasks()" /></div>
+        <div class="search-wrap" style="max-width:240px"><span class="search-icon">🔍</span><input placeholder="Search tasks…" id="tsearch" oninput="App.filterTasks()" /></div>
         <select class="fselect" id="tphase" onchange="App.filterTasks()"><option value="">All Phases</option>${['Initiation', 'Planning', 'Execution', 'Review', 'Launch', 'Completed'].map(p => `<option>${p}</option>`).join('')}</select>
-        <select class="fselect" id="tpri" onchonchange="App.filterTasks()"ange="filterTasks()"><option value="">All Priorities</option>${['High', 'Medium', 'Low'].map(p => `<option>${p}</option>`).join('')}</select>
+        <select class="fselect" id="tpri" onchange="App.filterTasks()"><option value="">All Priorities</option>${['High', 'Medium', 'Low'].map(p => `<option>${p}</option>`).join('')}</select>
         <div class="view-switcher" style="margin-left:auto">
           <button class="vs-btn${sub === 0 ? ' active' : ''}" onclick="App.switchSubtab(0)">⊞ Planner</button>
           <button class="vs-btn${sub === 1 ? ' active' : ''}" onclick="App.switchSubtab(1)">🏁 Milestones</button>
@@ -122,7 +122,7 @@ export async function renderTasks(sub) {
       const group = list.filter(t => (t.phase || '') === ph);
       if (!group.length) return '';
       return `<tr class="group-header-row"><td colspan="8"><div class="gh-inner">${picons[ph] || '📌'} ${ph} <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--surface3);padding:1px 5px;border-radius:8px;font-weight:400">${group.length}</span></div></td></tr>` +
-        group.map(t => `<tr onclick="openDetail('task',${safeJSON(t)})" class="${isOverdue(t) ? 'row-ov' : ''}">
+        group.map(t => `<tr onclick="App.openDetail('task',${safeJSON(t)})" class="${isOverdue(t) ? 'row-ov' : ''}">
           <td class="td-main"><span>${t.name}</span></td>
           <td><span class="ptag"><span class="pdot" style="background:${pColor(t.project)}"></span>${t.project || '—'}</span></td>
           <td>${statusBadge(t)}</td>
