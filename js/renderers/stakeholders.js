@@ -37,7 +37,7 @@ export async function renderStakeholders(sub) {
       <div class="table-header table-title-sticky"><div class="table-title">📋 Stakeholder List</div></div>
       <table><thead class="table-thead-sticky"><tr><th>Name</th><th>Role</th><th>Company</th><th>Category</th><th>Industry</th><th>Contact</th><th>Last Contact</th></tr></thead>
       <tbody>${list.map(s => `
-        <tr onclick="openDetail('stakeholder',${safeJSON(s)})">
+        <tr onclick="App.openDetail('stakeholder',${safeJSON(s)})">
           <td class="td-main"><span style="display:flex;align-items:center;gap:8px"><span class="stk-avatar" style="width:24px;height:24px;font-size:10px;background:${avatarColor(s.name)}22;color:${avatarColor(s.name)};border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${initials(s.name)}</span>${s.name}</span></td>
           <td style="font-size:12px">${s.title}</td>
           <td style="font-size:12px;color:var(--text2)">${s.company}</td>

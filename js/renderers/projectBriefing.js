@@ -122,7 +122,7 @@ export function renderMeetingsBox(projectName, pid) {
           ${futureMonthKeys.map(mk => {
       const label = new Date(mk + '-01').toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
       const mtgs = futureByMonth[mk];
-      return `<div style="margin-top:4px"><span style="opacity:.7">${label}:</span> ${mtgs.map(m => `<strong style="cursor:pointer;text-decoration:underline" onclick="App.AppState.meetingViewMode='calendar';AppState.meetingCalMonth='${mk}';App.openProjectBriefing('${pid}')">${m.name}</strong> (${fmtDate(m.date)}${m.time ? ' @ ' + fmtTime(m.time) : ''}${m.duration ? ' · ' + m.duration : ''})`).join(', ')}</div>`;
+      return `<div style="margin-top:4px"><span style="opacity:.7">${label}:</span> ${mtgs.map(m => `<strong style="cursor:pointer;text-decoration:underline" onclick="App.AppState.meetingViewMode='calendar';App.AppState.meetingCalMonth='${mk}';App.openProjectBriefing('${pid}')">${m.name}</strong> (${fmtDate(m.date)}${m.time ? ' @ ' + fmtTime(m.time) : ''}${m.duration ? ' · ' + m.duration : ''})`).join(', ')}</div>`;
     }).join('')}
         </div>
       </div>` : '';

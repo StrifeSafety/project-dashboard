@@ -198,7 +198,7 @@ function buildForm(type, d = {}) {
     <div class="fg"><label class="fl">Interim Action</label><textarea class="fta" id="f-interimAction" placeholder="Short term or temporary action…">${d.interimAction || ''}</textarea></div>
     <div class="fg"><label class="fl">Final Action</label><textarea class="fta" id="f-finalAction" placeholder="Permanent or long term action…">${d.finalAction || ''}</textarea></div>
     <div class="fg-grid">
-      <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p" onchange="rebuildTaskBudgetList(this.value)"/><datalist id="dl-p">${projOpts}</datalist></div>
+      <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p" onchange="App.rebuildTaskBudgetList(this.value)"/><datalist id="dl-p">${projOpts}</datalist></div>
       <div class="fg"><label class="fl">Phase</label><select class="fs" id="f-phase"><option value="">— Select —</option>${phOpts}</select></div>
       <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option${d.status === 'Not Started' ? ' selected' : ''}>Not Started</option><option${d.status === 'In Progress' ? ' selected' : ''}>In Progress</option><option${d.status === 'Complete' ? ' selected' : ''}>Complete</option><option${d.status === 'On Hold' ? ' selected' : ''}>On Hold</option></select></div>
       <div class="fg"><label class="fl">Priority</label><select class="fs" id="f-priority"><option value="">— None —</option><option${d.priority === 'High' ? ' selected' : ''}>High</option><option${d.priority === 'Medium' ? ' selected' : ''}>Medium</option><option${d.priority === 'Low' ? ' selected' : ''}>Low</option></select></div>
@@ -242,7 +242,7 @@ function buildForm(type, d = {}) {
     return `
     <div class="fg-grid">
       <div class="fg"><label class="fl">Budget Name *</label><input class="fi" id="f-name" value="${d.name || ''}" placeholder="e.g. Budget #1"/></div>
-      <div class="fg"><label class="fl">Project</label><select class="fs" id="f-project" onchange="rebuildBudgetTaskList(this.value)">${DATA.projects.map(p => `<option value="${p.name}"${d.project === p.name ? ' selected' : ''}>${p.name}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Project</label><select class="fs" id="f-project" onchange="App.rebuildBudgetTaskList(this.value)">${DATA.projects.map(p => `<option value="${p.name}"${d.project === p.name ? ' selected' : ''}>${p.name}</option>`).join('')}</select></div>
       <div class="fg"><label class="fl">Linked Task</label><select class="fs" id="f-linkedTask"><option value="">— None —</option>${taskOpts}</select></div>
       <div class="fg"><label class="fl">Milestone</label><input class="fi" id="f-milestone" value="${d.milestone || ''}" placeholder="e.g. Milestone #1"/></div>
       <div class="fg"><label class="fl">Type</label><select class="fs" id="f-type"><option${d.type === 'Fixed' ? ' selected' : ''}>Fixed</option><option${d.type === 'Hourly' ? ' selected' : ''}>Hourly</option></select></div>
