@@ -27,6 +27,7 @@ export function openAddTaskForProject(projectName) {
 
 export function openAddMeetingForProject(projectName, pid) {
   AppState.meetingViewMode = 'list';
+  AppState._pendingBriefingRefresh = pid;
   openAddForm('meeting', { project: projectName });
 }
 

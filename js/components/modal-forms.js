@@ -128,7 +128,7 @@ function buildForm(type, d = {}) {
     <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('stakeholder')">Save Stakeholder</button></div>`;
 
   if (type === 'meeting') {
-    const isProject = d.project !== undefined ? !!d.project : true;
+    const isProject = AppState.editId ? !!d.project : true;
     return `
     <div class="fg"><label class="fl">Meeting Title *</label><input class="fi" id="f-name" value="${d.name || ''}" placeholder="e.g. Project Kickoff"/></div>
     <div class="fg-grid">
@@ -137,7 +137,7 @@ function buildForm(type, d = {}) {
         document.getElementById('f-project-wrap').style.display = isInternal ? 'none' : '';
         if (isInternal) document.getElementById('f-project').value = '';
       "><option value="project"${isProject ? ' selected' : ''}>Project Meeting</option><option value="internal"${!isProject ? ' selected' : ''}>Internal Meeting</option></select></div>
-      <div class="fg" id="f-project-wrap" style="${!isProject ? 'display:none' : ''}"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p" placeholder="Select a project"/><datalist id="dl-p">${projOpts}</datalist></div>
+      <div class="fg" id="f-project-wrap" style="${!isProject ? 'display:none' : ''}"><label class="fl">Project</label><select class="fs" id="f-project"><option value="">— Select project —</option>${projOpts}</select></div>
       <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="f-date" value="${d.date || ''}"/></div>
       <div class="fg"><label class="fl">Time</label><input class="fi" type="time" id="f-time" value="${d.time || ''}"/></div>
       <div class="fg"><label class="fl">Duration</label><select class="fs" id="f-duration"><option value="">— None —</option><option value="15 min"${d.duration === '15 min' ? ' selected' : ''}>15 min</option><option value="30 min"${d.duration === '30 min' ? ' selected' : ''}>30 min</option><option value="45 min"${d.duration === '45 min' ? ' selected' : ''}>45 min</option><option value="1 hour"${d.duration === '1 hour' ? ' selected' : ''}>1 hour</option><option value="1.5 hours"${d.duration === '1.5 hours' ? ' selected' : ''}>1.5 hours</option><option value="2 hours"${d.duration === '2 hours' ? ' selected' : ''}>2 hours</option><option value="3 hours"${d.duration === '3 hours' ? ' selected' : ''}>3 hours</option><option value="Half day"${d.duration === 'Half day' ? ' selected' : ''}>Half day</option><option value="Full day"${d.duration === 'Full day' ? ' selected' : ''}>Full day</option></select></div>
@@ -227,7 +227,8 @@ export function saveForm(type) {
   AppState.editId = null;
 
   const reload = async () => {
-    const briefingId = AppState.currentBriefingId;
+    const briefingId = AppState.currentBriefingId || AppState._pendingBriefingRefresh;
+    AppState._pendingBriefingRefresh = null;
     if (type === 'project') await saveProject(obj, isEdit);
     else if (type === 'task') await saveTask(obj, isEdit);
     else if (type === 'budget') await saveBudget(obj, isEdit);
