@@ -59,14 +59,14 @@ export async function openDetail(type, obj) {
         const b = DATA.budgets.find(x => x.id === obj.linkedBudgetId);
         if (!b) return '—';
         const ov = b.spend - b.target;
-        return `<span onclick="closeOverlay('detailModal');switchTabFiltered('budgets','${b.project}');" style="cursor:pointer;color:var(--accent);text-decoration:underline;font-weight:500">${b.name}</span>
+        return `<span onclick="App.closeOverlay('detailModal');App.switchTabFiltered('budgets','${b.project}');" style="cursor:pointer;color:var(--accent);text-decoration:underline;font-weight:500">${b.name}</span>
           <span style="font-size:11px;color:var(--text3);margin-left:6px">${b.project}</span>
           <div style="margin-top:4px;font-size:11px">
             <span style="color:var(--text3)">Target: </span><span style="color:var(--text2)">${fmtCur(b.target)}</span>
             <span class="badge ${ov > 0 ? 'b-red' : 'b-green'}" style="margin-left:6px;font-size:9px">${ov > 0 ? '⬆ Over' : '⬇ Under'} by ${fmtCur(Math.abs(ov))}</span>
           </div>`;
       })()}</div></div>` : ''}`;
-    actions = `<button class="btn btn-ghost" onclick="openEditForm('task','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('task','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openEditForm('task','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('task','${obj.id}')">🗑 Delete</button>`;
 
   } else if (type === 'project') {
     const projT = DATA.tasks.filter(t => t.project === obj.name);
@@ -90,7 +90,7 @@ export async function openDetail(type, obj) {
       <div class="fg"><div class="dk">Progress</div><div class="dv">
         <div class="prog-wrap"><div class="prog-track" style="flex:1"><div class="prog-fill" style="width:${pct}%;background:${pCol(pct)}"></div></div><span class="prog-pct">${pct}%</span></div>
       </div></div>`;
-    actions = `<button class="btn btn-ghost" onclick="openProjectBriefing('${obj.id}');closeOverlay('detailModal')">📋 Open Briefing</button><button class="btn btn-ghost" onclick="openEditForm('project','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('project','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openProjectBriefing('${obj.id}');App.closeOverlay('detailModal')">📋 Open Briefing</button><button class="btn btn-ghost" onclick="App.openEditForm('project','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('project','${obj.id}')">🗑 Delete</button>`;
 
   } else if (type === 'doc') {
     body = `<div class="fg-grid">
@@ -99,7 +99,7 @@ export async function openDetail(type, obj) {
       <div class="fg"><div class="dk">Phase</div><div class="dv"><span class="badge b-purple">${obj.phase || '—'}</span></div></div>
       <div class="fg"><div class="dk">Last Edited</div><div class="dv" style="font-family:'DM Mono',monospace;font-size:12px">${obj.edited || '—'}</div></div>
     </div>`;
-    actions = `<button class="btn btn-ghost" onclick="openEditForm('doc','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('doc','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openEditForm('doc','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('doc','${obj.id}')">🗑 Delete</button>`;
 
   } else if (type === 'budget') {
     const v = obj.spend - obj.target;
@@ -112,7 +112,7 @@ export async function openDetail(type, obj) {
       <div class="fg"><div class="dk">Variance</div><div class="dv" style="color:${v > 0 ? 'var(--red)' : 'var(--green)'}">${v > 0 ? '-' : '+'}${fmtCur(Math.abs(v))}</div></div>
       ${obj.hours ? `<div class="fg"><div class="dk">Hours</div><div class="dv">${obj.hours}h @ ${fmtCur(obj.rate)}/h</div></div>` : ''}
     </div>`;
-    actions = `<button class="btn btn-ghost" onclick="openEditForm('budget','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('budget','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openEditForm('budget','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('budget','${obj.id}')">🗑 Delete</button>`;
 
   } else if (type === 'stakeholder') {
     body = `<div class="fg-grid">
@@ -126,7 +126,7 @@ export async function openDetail(type, obj) {
       <div class="fg"><div class="dk">Project</div><div class="dv"><span class="ptag"><span class="pdot" style="background:${pColor(obj.project)}"></span>${obj.project || '—'}</span></div></div>
       <div class="fg"><div class="dk">Last Contact</div><div class="dv">${fmtLastContact(obj)}</div></div>
     </div>`;
-    actions = `<button class="btn btn-ghost" onclick="openEditForm('stakeholder','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('stakeholder','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openEditForm('stakeholder','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('stakeholder','${obj.id}')">🗑 Delete</button>`;
 
   } else if (type === 'meeting') {
     body = `<div class="fg-grid">
@@ -139,7 +139,7 @@ export async function openDetail(type, obj) {
     </div>
     ${obj.notes ? `<div class="fg"><div class="dk">Notes</div><div class="dv dv-desc">${obj.notes}</div></div>` : ''}
     ${obj.nextSteps ? `<div class="fg" style="margin-top:8px"><div class="dk">Next Steps</div><div class="dv dv-desc">${obj.nextSteps}</div></div>` : ''}`;
-    actions = `<button class="btn btn-ghost" onclick="openEditForm('meeting','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="openDeleteModal('meeting','${obj.id}')">🗑 Delete</button>`;
+    actions = `<button class="btn btn-ghost" onclick="App.openEditForm('meeting','${obj.id}')">✎ Edit</button><button class="btn btn-ghost btn-danger" onclick="App.openDeleteModal('meeting','${obj.id}')">🗑 Delete</button>`;
   }
 
   document.getElementById('detailBody').innerHTML = await Promise.resolve(body);
@@ -211,7 +211,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Contractor Engaged</label><select class="fs" id="f-contractorEngaged"><option value="No"${d.contractorEngaged !== 'Yes' ? ' selected' : ''}>No</option><option value="Yes"${d.contractorEngaged === 'Yes' ? ' selected' : ''}>Yes</option></select></div>
       <div class="fg"><label class="fl">Contractor Name</label><input class="fi" id="f-contractorName" value="${d.contractorName || ''}" placeholder="e.g. ABC Contractors Pty Ltd"/></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('task')">Save Task</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('task')">Save Task</button></div>`;
   }
 
   if (type === 'project') return `
@@ -224,7 +224,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Start Date</label><input class="fi" type="date" id="f-start" value="${d.startDate || ''}"/></div>
       <div class="fg"><label class="fl">End Date</label><input class="fi" type="date" id="f-end" value="${d.endDate || ''}"/></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('project')">Save Project</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('project')">Save Project</button></div>`;
 
   if (type === 'doc') return `
     <div class="fg-grid">
@@ -233,7 +233,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Phase</label><select class="fs" id="f-phase"><option value="">— Select —</option>${phOpts}</select></div>
       <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option${d.status === 'Draft' ? ' selected' : ''}>Draft</option><option${d.status === 'Current' ? ' selected' : ''}>Current</option><option${d.status === 'Superseded' ? ' selected' : ''}>Superseded</option></select></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('doc')">Save Document</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('doc')">Save Document</button></div>`;
 
   if (type === 'budget') {
     const budgetProject = d.project || DATA.projects[0]?.name || '';
@@ -249,7 +249,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Target Budget ($)</label><input class="fi" type="number" id="f-target" value="${d.target || ''}" placeholder="0"/></div>
       <div class="fg"><label class="fl">Spend ($)</label><input class="fi" type="number" id="f-spend" value="${d.spend || ''}" placeholder="0"/></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('budget')">Save Budget</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('budget')">Save Budget</button></div>`;
   }
 
   if (type === 'stakeholder') return `
@@ -263,7 +263,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Phone</label><input class="fi" id="f-phone" value="${d.phone || ''}" placeholder="000-000-0000"/></div>
       <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p"/><datalist id="dl-p">${projOpts}</datalist></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('stakeholder')">Save Stakeholder</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('stakeholder')">Save Stakeholder</button></div>`;
 
   if (type === 'meeting') {
     const isProject = d.project !== undefined ? !!d.project : true;
@@ -284,10 +284,10 @@ function buildForm(type, d = {}) {
     </div>
     <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="f-notes" placeholder="Meeting notes…">${d.notes || ''}</textarea></div>
     <div class="fg"><label class="fl">Next Steps</label><textarea class="fta" id="f-nextSteps" placeholder="Action items from this meeting…">${d.nextSteps || ''}</textarea></div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="saveForm('meeting')">Save Meeting</button></div>`;
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('meeting')">Save Meeting</button></div>`;
   }
 
-  return `<div class="modal-foot"><button class="btn btn-ghost" onclick="closeOverlay('addModal')">Cancel</button></div>`;
+  return `<div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button></div>`;
 }
 
 /* ── Rebuild budget dropdown when project changes in task form ── */

@@ -53,7 +53,7 @@ window.App.sendInvite = async () => {
 window.App.cancelInvite = async (id) => {
   document.getElementById('deleteModalMsg').textContent = 'Are you sure you want to rescind this invite? The invite link will no longer work.';
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     await deleteInvite(id);
     toast('✓ Invite rescinded');
     renderContent();
@@ -76,7 +76,7 @@ window.App.switchWorkspace = async (wsId) => {
   renderContent();
   renderSidebar();
   renderSubnav();
-  renderWorkspaceSwitcher();
+  window.App.renderWorkspaceSwitcher();
   const dd = document.getElementById('wsDropdown');
   if (dd) dd.style.display = 'none';
 };
@@ -100,7 +100,7 @@ window.App.submitCreateWorkspace = async () => {
   await loadData();
   renderContent();
   renderSidebar();
-  renderWorkspaceSwitcher();
+  window.App.renderWorkspaceSwitcher();
   toast('✓ Workspace "' + name + '" created');
 };
 
@@ -133,7 +133,7 @@ window.App.renderWorkspaceSwitcher = function() {
 window.App.removeMember = async (memberId, memberName) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to remove ${memberName} from this workspace? They will lose access to all projects in this workspace.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     await supabase.from('workspace_members').delete().eq('id', memberId);
     toast(`✓ ${memberName} removed from workspace`);
     renderContent();
@@ -144,7 +144,7 @@ window.App.removeMember = async (memberId, memberName) => {
 window.App.adminDeleteUser = async (userId, userName) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to permanently delete ${userName}? This will remove them from all workspaces and cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     await supabase.rpc('admin_delete_user', { target_user_id: userId });
     toast(`🗑 ${userName} deleted`);
     renderContent();
@@ -168,7 +168,7 @@ window.App.adminAssignWorkspace = async (userId) => {
 window.App.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
   document.getElementById('deleteModalMsg').textContent = `Remove ${userName} from "${wsName}"? They will lose access to all projects in that workspace.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     await supabase.from('workspace_members').delete().eq('id', memberId);
     toast(`✓ ${userName} removed from ${wsName}`);
     renderContent();
@@ -178,7 +178,7 @@ window.App.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
 window.App.adminDeleteWorkspace = async (id, name) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to delete the workspace "${name}" and ALL its data? This cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     await supabase.from('profiles').update({ organisation_id: null }).eq('organisation_id', id);
     await supabase.from('invites').delete().eq('workspace_id', id);
     await supabase.from('workspace_members').delete().eq('workspace_id', id);
@@ -186,7 +186,7 @@ window.App.adminDeleteWorkspace = async (id, name) => {
     toast('🗑 Workspace deleted');
     await loadWorkspaces();
     renderContent();
-    renderWorkspaceSwitcher();
+    window.App.renderWorkspaceSwitcher();
   };
   document.getElementById('deleteModal').classList.add('open');
 };
@@ -210,7 +210,7 @@ window.App.openDeleteModal = function(type, id, label) {
   };
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to delete ${labels[type] || 'this item'}? This cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = () => {
-    closeDeleteModal();
+    window.App.closeDeleteModal();
     deleteItem(type, id);
   };
   document.getElementById('deleteModal').classList.add('open');
@@ -331,7 +331,7 @@ function initApp() {
   renderSubnav();
   renderSidebar();
   renderContent();
-  renderWorkspaceSwitcher();
+  window.App.renderWorkspaceSwitcher();
 }
 window.App.__initApp = initApp;
 
