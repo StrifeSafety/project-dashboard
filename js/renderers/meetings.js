@@ -23,11 +23,11 @@ export async function renderMeetings(sub) {
   };
 
   return `<div style="padding:20px 24px">
-    <div class="page-banner"><div class="page-banner-icon">📅</div><div><h2>${sub === 0 ? 'Last Meetings' : sub === 1 ? 'Internal Meetings' : 'Project Meetings'}</h2><p>${sub === 0 ? 'Your most recent meetings at a glance.' : sub === 1 ? 'Internal team standups, planning sessions, and training.' : 'Client and stakeholder project meetings.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="openAddForm('meeting')">+ New Meeting</button></div></div>
+    <div class="page-banner"><div class="page-banner-icon">📅</div><div><h2>${sub === 0 ? 'Last Meetings' : sub === 1 ? 'Internal Meetings' : 'Project Meetings'}</h2><p>${sub === 0 ? 'Your most recent meetings at a glance.' : sub === 1 ? 'Internal team standups, planning sessions, and training.' : 'Client and stakeholder project meetings.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="App.openAddForm('meeting')">+ New Meeting</button></div></div>
     <div class="meeting-list">
       ${list.map(m => {
     const dd = fmtMDate(m.date);
-    return `<div class="meeting-card" onclick="openDetail('meeting',${safeJSON(m)})">
+    return `<div class="meeting-card" onclick="App.openDetail('meeting',${safeJSON(m)})">
           <div class="meeting-date-box"><div class="mdb-day">${dd.day}</div><div class="mdb-month">${dd.month}</div></div>
           <div class="meeting-info">
             <div class="meeting-title">${m.name}</div>

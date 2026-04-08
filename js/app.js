@@ -3,9 +3,10 @@ import { initAuth, renderAuthScreen, handleSignOut } from './auth.js';
 import { createInvite, deleteInvite, createWorkspace, supabase } from './supabase.js';
 import { loadData, loadWorkspaces, validateData, DATA } from './storage.js';
 import { openExportModal, closeExportModal, generateExport } from './components/toolbar.js';
-window.closeExportModal = closeExportModal;
-window.generateExport = generateExport;
-window.openExportModal = openExportModal;
+window.App = {};
+window.App.closeExportModal = closeExportModal;
+window.App.generateExport = generateExport;
+window.App.openExportModal = openExportModal;
 import { openAdd, closeOverlay, openDetail, openEditForm, openAddForm, saveForm, deleteItem, rebuildTaskBudgetList, rebuildBudgetTaskList } from './components/modal.js';
 import { renderSidebar } from './components/sidebar.js';
 import { renderSubnav } from './components/subnav.js';
@@ -19,25 +20,25 @@ import { toast } from './components/toast.js';
    ══════════════════════════════════════════════════ */
 
 /* ── Expose functions to global scope for inline onclick handlers ── */
-window.switchTab = switchTab;
-window.switchSubtab = switchSubtab;
-window.openDetail = openDetail;
-window.openEditForm = openEditForm;
-window.openAddForm = openAddForm;
-window.saveForm = saveForm;
-window.deleteItem = deleteItem;
-window.openProjectBriefing = openProjectBriefing;
-window.openAddTaskForProject = openAddTaskForProject;
-window.openAddMeetingForProject = openAddMeetingForProject;
-window.closeOverlay = closeOverlay;
-window.filterTasks = filterTasks;
-window.AppState = AppState;
-window.renderContent = renderContent;
-window.switchToBriefing = switchToBriefing;
-window.switchTabFiltered = switchTabFiltered;
-window.rebuildTaskBudgetList = rebuildTaskBudgetList;
-window.rebuildBudgetTaskList = rebuildBudgetTaskList;
-window.sendInvite = async () => {
+window.App.switchTab = switchTab;
+window.App.switchSubtab = switchSubtab;
+window.App.openDetail = openDetail;
+window.App.openEditForm = openEditForm;
+window.App.openAddForm = openAddForm;
+window.App.saveForm = saveForm;
+window.App.deleteItem = deleteItem;
+window.App.openProjectBriefing = openProjectBriefing;
+window.App.openAddTaskForProject = openAddTaskForProject;
+window.App.openAddMeetingForProject = openAddMeetingForProject;
+window.App.closeOverlay = closeOverlay;
+window.App.filterTasks = filterTasks;
+window.App.AppState = AppState;
+window.App.renderContent = renderContent;
+window.App.switchToBriefing = switchToBriefing;
+window.App.switchTabFiltered = switchTabFiltered;
+window.App.rebuildTaskBudgetList = rebuildTaskBudgetList;
+window.App.rebuildBudgetTaskList = rebuildBudgetTaskList;
+window.App.sendInvite = async () => {
   const email = document.getElementById('invite-email')?.value?.trim();
   const feedback = document.getElementById('invite-feedback');
   if (!email) { feedback.style.display='block'; feedback.style.color='var(--red)'; feedback.textContent='Please enter an email address.'; return; }
@@ -49,7 +50,7 @@ window.sendInvite = async () => {
   document.getElementById('invite-email').value = '';
   renderContent();
 };
-window.cancelInvite = async (id) => {
+window.App.cancelInvite = async (id) => {
   document.getElementById('deleteModalMsg').textContent = 'Are you sure you want to rescind this invite? The invite link will no longer work.';
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
@@ -59,7 +60,7 @@ window.cancelInvite = async (id) => {
   };
   document.getElementById('deleteModal').classList.add('open');
 };
-window.switchWorkspace = async (wsId) => {
+window.App.switchWorkspace = async (wsId) => {
   AppState.currentWorkspaceId = wsId;
   AppState.organisationId = wsId;
   AppState.currentTab = 'dashboard';
@@ -80,14 +81,14 @@ window.switchWorkspace = async (wsId) => {
   if (dd) dd.style.display = 'none';
 };
 
-window.createNewWorkspace = () => {
+window.App.createNewWorkspace = () => {
   const dd = document.getElementById('wsDropdown');
   if (dd) dd.style.display = 'none';
   document.getElementById('ws-name-input').value = '';
   document.getElementById('createWorkspaceModal').classList.add('open');
 };
 
-window.submitCreateWorkspace = async () => {
+window.App.submitCreateWorkspace = async () => {
   const name = document.getElementById('ws-name-input').value.trim();
   if (!name) { toast('⚠ Please enter a workspace name'); return; }
   document.getElementById('createWorkspaceModal').classList.remove('open');
@@ -103,25 +104,25 @@ window.submitCreateWorkspace = async () => {
   toast('✓ Workspace "' + name + '" created');
 };
 
-window.renderWorkspaceSwitcher = function() {
+window.App.renderWorkspaceSwitcher = function() {
   const el = document.getElementById('workspaceSwitcher');
   if (!el) return;
   const current = AppState.workspaces.find(w => w.id === AppState.currentWorkspaceId);
   el.innerHTML = `
-    <div class="ws-switcher" id="wsSwitcherBtn" onclick="toggleWsDropdown()">
+    <div class="ws-switcher" id="wsSwitcherBtn" onclick="App.toggleWsDropdown()">
       <span class="ws-dot"></span>
       <span class="ws-name">${current?.name || 'Select Workspace'}</span>
       <span style="font-size:10px;opacity:.6">▾</span>
     </div>
     <div class="ws-dropdown" id="wsDropdown" style="display:none">
       ${AppState.workspaces.map(w => `
-        <div class="ws-option${w.id === AppState.currentWorkspaceId ? ' active' : ''}" onclick="switchWorkspace('${w.id}')">
+        <div class="ws-option${w.id === AppState.currentWorkspaceId ? ' active' : ''}" onclick="App.switchWorkspace('${w.id}')">
           <span class="ws-dot"></span>
           <span>${w.name}</span>
           ${w.role === 'owner' ? '<span style="font-family:\'DM Mono\',monospace;font-size:9px;opacity:.5">owner</span>' : ''}
         </div>`).join('')}
       <div class="ws-divider"></div>
-      <div class="ws-option" onclick="createNewWorkspace()">
+      <div class="ws-option" onclick="App.createNewWorkspace()">
         <span style="font-size:13px">＋</span>
         <span>New Workspace</span>
       </div>
@@ -129,7 +130,7 @@ window.renderWorkspaceSwitcher = function() {
   `;
 };
 
-window.removeMember = async (memberId, memberName) => {
+window.App.removeMember = async (memberId, memberName) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to remove ${memberName} from this workspace? They will lose access to all projects in this workspace.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
@@ -140,7 +141,7 @@ window.removeMember = async (memberId, memberName) => {
   document.getElementById('deleteModal').classList.add('open');
 };
 
-window.adminDeleteUser = async (userId, userName) => {
+window.App.adminDeleteUser = async (userId, userName) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to permanently delete ${userName}? This will remove them from all workspaces and cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
@@ -151,7 +152,7 @@ window.adminDeleteUser = async (userId, userName) => {
   document.getElementById('deleteModal').classList.add('open');
 };
 
-window.adminAssignWorkspace = async (userId) => {
+window.App.adminAssignWorkspace = async (userId) => {
   const wsId = document.getElementById(`ws-assign-${userId}`)?.value;
   if (!wsId) return;
   const { error } = await supabase.rpc('admin_add_to_workspace', {
@@ -164,7 +165,7 @@ window.adminAssignWorkspace = async (userId) => {
   renderContent();
 };
 
-window.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
+window.App.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
   document.getElementById('deleteModalMsg').textContent = `Remove ${userName} from "${wsName}"? They will lose access to all projects in that workspace.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
@@ -174,7 +175,7 @@ window.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
   };
   document.getElementById('deleteModal').classList.add('open');
 };
-window.adminDeleteWorkspace = async (id, name) => {
+window.App.adminDeleteWorkspace = async (id, name) => {
   document.getElementById('deleteModalMsg').textContent = `Are you sure you want to delete the workspace "${name}" and ALL its data? This cannot be undone.`;
   document.getElementById('deleteModalConfirmBtn').onclick = async () => {
     closeDeleteModal();
@@ -190,15 +191,15 @@ window.adminDeleteWorkspace = async (id, name) => {
   document.getElementById('deleteModal').classList.add('open');
 };
 
-window.adminToggleSuperAdmin = async (userId, value) => {
+window.App.adminToggleSuperAdmin = async (userId, value) => {
   await supabase.from('profiles').update({ is_super_admin: value }).eq('id', userId);
   toast(value ? '✓ Super admin granted' : '✓ Super admin revoked');
   renderContent();
 };
-window.closeDeleteModal = function() {
+window.App.closeDeleteModal = function() {
   document.getElementById('deleteModal').classList.remove('open');
 };
-window.openDeleteModal = function(type, id, label) {
+window.App.openDeleteModal = function(type, id, label) {
   const labels = {
     task: 'this task',
     project: 'this project and ALL linked tasks, documents, budgets, meetings and stakeholders',
@@ -215,7 +216,7 @@ window.openDeleteModal = function(type, id, label) {
   document.getElementById('deleteModal').classList.add('open');
 };
 
-window.toggleWsDropdown = function() {
+window.App.toggleWsDropdown = function() {
   const dd = document.getElementById('wsDropdown');
   if (dd) dd.style.display = dd.style.display === 'none' ? '' : 'none';
 };
@@ -332,7 +333,7 @@ function initApp() {
   renderContent();
   renderWorkspaceSwitcher();
 }
-window.__initApp = initApp;
+window.App.__initApp = initApp;
 
 /* ── Bootstrap — check auth first ── */
 (async () => {

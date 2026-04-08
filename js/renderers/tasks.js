@@ -59,15 +59,15 @@ export async function renderTasks(sub) {
   const toolbarHTML = `
     <div class="task-toolbar-sticky" style="border-radius:var(--r) var(--r) 0 0">
       <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;flex-wrap:wrap">
-        <div class="search-wrap" style="max-width:240px"><span class="search-icon">🔍</span><input placeholder="Search tasks…" id="tsearch" oninput="filterTasks()" /></div>
-        <select class="fselect" id="tphase" onchange="filterTasks()"><option value="">All Phases</option>${['Initiation', 'Planning', 'Execution', 'Review', 'Launch', 'Completed'].map(p => `<option>${p}</option>`).join('')}</select>
-        <select class="fselect" id="tpri" onchange="filterTasks()"><option value="">All Priorities</option>${['High', 'Medium', 'Low'].map(p => `<option>${p}</option>`).join('')}</select>
+        <div class="search-wrap" style="max-width:240px"><span class="search-icon">🔍</span><input placeholder="Search tasks…" id="tsearch" oninoninput="App.filterTasks()"put="filterTasks()" /></div>
+        <select class="fselect" id="tphase" onchange="App.filterTasks()"><option value="">All Phases</option>${['Initiation', 'Planning', 'Execution', 'Review', 'Launch', 'Completed'].map(p => `<option>${p}</option>`).join('')}</select>
+        <select class="fselect" id="tpri" onchonchange="App.filterTasks()"ange="filterTasks()"><option value="">All Priorities</option>${['High', 'Medium', 'Low'].map(p => `<option>${p}</option>`).join('')}</select>
         <div class="view-switcher" style="margin-left:auto">
-          <button class="vs-btn${sub === 0 ? ' active' : ''}" onclick="switchSubtab(0)">⊞ Planner</button>
-          <button class="vs-btn${sub === 1 ? ' active' : ''}" onclick="switchSubtab(1)">🏁 Milestones</button>
-          <button class="vs-btn${sub === 2 ? ' active' : ''}" onclick="switchSubtab(2)">⊟ Kanban</button>
+          <button class="vs-btn${sub === 0 ? ' active' : ''}" onclick="App.switchSubtab(0)">⊞ Planner</button>
+          <button class="vs-btn${sub === 1 ? ' active' : ''}" onclick="App.switchSubtab(1)">🏁 Milestones</button>
+          <button class="vs-btn${sub === 2 ? ' active' : ''}" onclick="App.switchSubtab(2)">⊟ Kanban</button>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openAddForm('task')">+ Task</button>
+        <button class="btn btn-primary btn-sm" onclick="App.openAddForm('task')">+ Task</button>
       </div>
     </div>`;
 
@@ -86,7 +86,7 @@ export async function renderTasks(sub) {
       return `<div class="kb-col">
             <div class="kb-head"><span class="kb-title" style="color:${scols[s]}">${statusIcon(s)} ${s}</span><span class="kb-cnt">${cards.length}</span></div>
             <div class="kb-cards">${cards.map(t => `
-              <div class="kb-card" onclick="openDetail('task',${safeJSON(t)})">
+              <div class="kb-card" onclick="App.openDetail('task',${safeJSON(t)})">
                 <div class="kb-card-title">${t.name}</div>
                 <div class="kb-card-meta"><span class="ptag" style="font-size:11px"><span class="pdot" style="background:${pColor(t.project)}"></span>${t.project || '—'}</span>${priBadge(t.priority)}</div>
                 <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${calcProgress(t)}%;background:${pCol(calcProgress(t))}"></div></div><span class="prog-pct">${calcProgress(t)}%</span></div>

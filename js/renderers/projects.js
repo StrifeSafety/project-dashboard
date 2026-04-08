@@ -38,7 +38,7 @@ export async function renderProjects(sub) {
   }
 
   return `<div style="padding:20px 24px">
-    <div class="page-banner"><div class="page-banner-icon">📁</div><div><h2>${sub === 0 ? 'Active Projects' : 'All Projects'}</h2><p>${sub === 0 ? 'View all active projects that are either in progress or completed.' : 'Complete list of your project portfolio.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="openAddForm('project')">+ New Project</button></div></div>
+    <div class="page-banner"><div class="page-banner-icon">📁</div><div><h2>${sub === 0 ? 'Active Projects' : 'All Projects'}</h2><p>${sub === 0 ? 'View all active projects that are either in progress or completed.' : 'Complete list of your project portfolio.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="App.openAddForm('project')">+ New Project</button></div></div>
     <div class="project-grid">
       ${list.map(p => {
     const ps = getProjectStats(p, DATA.tasks, DATA.budgets);
@@ -48,14 +48,14 @@ export async function renderProjects(sub) {
     const projStakeholders = DATA.stakeholders.filter(s => s.project === p.name);
     const pct = ps.pct;
     const ov = ps.ov;
-    return `<div class="project-card" onclick="openProjectBriefing('${p.id}')">
+    return `<div class="project-card" onclick="App.openProjectBriefing('${p.id}')">
           <div class="pc-body" style="padding:18px 20px">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
               <div>
                 <div class="pc-title" style="font-size:16px;margin-bottom:5px"><span class="pdot" style="background:${pColor(p.name)}"></span>${p.name}</div>
                 ${projStatusBadge(p.status)}
               </div>
-              <button onclick="event.stopPropagation();openEditForm('project','${p.id}')" style="background:var(--surface3);border:none;color:var(--text3);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center">✎</button>
+              <button onclick="event.stopPropagation();App.openEditForm('project','${p.id}')" style="background:var(--surface3);border:none;color:var(--text3);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center">✎</button>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;font-size:12px;color:var(--text2)">
               ${p.company ? `<span style="display:flex;align-items:center;gap:4px">🏢 ${p.company}</span>` : ''}

@@ -14,10 +14,10 @@ export async function renderStakeholders(sub) {
   if (sub === 1) list = list.filter(s => s.category === 'Team');
 
   return `<div style="padding:20px 24px">
-    <div class="page-banner"><div class="page-banner-icon">👥</div><div><h2>${sub === 0 ? 'All Stakeholders' : 'Team Members'}</h2><p>${sub === 0 ? 'Clients, team members, and all project stakeholders.' : 'Your internal project team.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="openAddForm('stakeholder')">+ Add Stakeholder</button></div></div>
+    <div class="page-banner"><div class="page-banner-icon">👥</div><div><h2>${sub === 0 ? 'All Stakeholders' : 'Team Members'}</h2><p>${sub === 0 ? 'Clients, team members, and all project stakeholders.' : 'Your internal project team.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="App.openAddForm('stakeholder')">+ Add Stakeholder</button></div></div>
     <div class="stk-grid">
       ${list.map(s => `
-        <div class="stk-card" onclick="openDetail('stakeholder',${safeJSON(s)})">
+        <div class="stk-card" onclick="App.openDetail('stakeholder',${safeJSON(s)})">
           <div class="stk-avatar" style="background:${avatarColor(s.name)}22;color:${avatarColor(s.name)}">${initials(s.name)}</div>
           <div class="stk-info">
             <div class="stk-name">${s.name}</div>

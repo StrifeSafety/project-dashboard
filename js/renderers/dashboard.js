@@ -257,11 +257,11 @@ export async function renderDashboard() {
     <div class="table-card" style="margin-bottom:20px">
       <div class="table-header">
         <div class="table-title">📅 Upcoming Meetings</div>
-        <button class="btn btn-ghost btn-sm" onclick="switchTab('meetings')">View all</button>
+        <button class="btn btn-ghost btn-sm" onclick="App.switchTab('meetings')">View all</button>
       </div>
       <table><thead><tr><th>Meeting</th><th>Category</th><th>Project</th><th>Date</th><th>Type</th><th>Next Steps</th></tr></thead>
       <tbody>${upcomingMeetings.length ? upcomingMeetings.map(m => `
-        <tr onclick="openDetail('meeting',${safeJSON(m)})">
+        <tr onclick="App.openDetail('meeting',${safeJSON(m)})">
           <td class="td-main"><span>${m.name}</span></td>
           <td><span class="badge ${m.project ? 'b-accent' : 'b-grey'}">${m.project ? '📁 Project' : '🏢 Internal'}</span></td>
           <td><span class="ptag"><span class="pdot" style="background:${pColor(m.project)}"></span>${m.project || '—'}</span></td>
@@ -277,11 +277,11 @@ export async function renderDashboard() {
         <div class="table-card">
           <div class="table-header">
             <div class="table-title">⚡ Priority Tasks</div>
-            <button class="btn btn-ghost btn-sm" onclick="switchTab('tasks')">View all</button>
+            <button class="btn btn-ghost btn-sm" onclick="App.switchTab('tasks')">View all</button>
           </div>
           <table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Due</th></tr></thead>
           <tbody>${recentTasks.map(t => `
-            <tr onclick="openDetail('task',${safeJSON(t)})">
+            <tr onclick="App.openDetail('task',${safeJSON(t)})">
               <td class="td-main"><span>${t.name}</span></td>
               <td><span class="ptag"><span class="pdot" style="background:${pColor(t.project)}"></span>${t.project || '—'}</span></td>
               <td>${statusBadge(t)}</td>
@@ -297,7 +297,7 @@ export async function renderDashboard() {
         <div class="table-card">
           <div class="table-header">
             <div class="table-title">📁 Projects Overview</div>
-            <button class="btn btn-ghost btn-sm" onclick="switchTab('projects')">View all</button>
+            <button class="btn btn-ghost btn-sm" onclick="App.switchTab('projects')">View all</button>
           </div>
           <table><thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Tasks</th></tr></thead>
           <tbody>${projects.slice(0, 6).map(p => {

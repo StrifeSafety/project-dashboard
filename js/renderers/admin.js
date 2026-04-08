@@ -99,7 +99,7 @@ async function renderAdminWorkspaces() {
           <td class="td-mono" style="font-size:12px">${memberCountByWs[w.id] || 0}</td>
           <td class="td-mono" style="font-size:11px;color:var(--text3)">${new Date(w.created_at).toLocaleDateString('en-AU')}</td>
           <td>
-            <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="adminDeleteWorkspace('${w.id}','${w.name}')">🗑 Delete</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.adminDeleteWorkspace('${w.id}','${w.name}')">🗑 Delete</button>
           </td>
         </tr>`).join('')}
       </tbody></table>
@@ -141,20 +141,20 @@ async function renderAdminUsers() {
               ${userMemberships.map(m => `
                 <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:2px 8px;font-size:11px">
                   ${m.wsName}
-                  ${!isSelf ? `<span style="cursor:pointer;color:var(--red);margin-left:2px;font-size:13px;line-height:1" onclick="adminRemoveFromWorkspace('${m.memberId}','${u.full_name || u.email}','${m.wsName}')">×</span>` : ''}
+                  ${!isSelf ? `<span style="cursor:pointer;color:var(--red);margin-left:2px;font-size:13px;line-height:1" onclick="App.adminRemoveFromWorkspace('${m.memberId}','${u.full_name || u.email}','${m.wsName}')">×</span>` : ''}
                 </span>`).join('')}
             </div>
             ${!isSelf ? `<div style="display:flex;gap:6px;align-items:center">
               <select class="fs" id="ws-assign-${u.id}" style="font-size:11px;padding:3px 6px;height:28px">${wsOptions}</select>
-              <button class="btn btn-ghost btn-sm" onclick="adminAssignWorkspace('${u.id}')">+ Add</button>
+              <button class="btn btn-ghost btn-sm" onclick="App.adminAssignWorkspace('${u.id}')">+ Add</button>
             </div>` : ''}
           </td>
           <td>${u.is_super_admin ? '<span class="badge b-purple">✓ Yes</span>' : '<span style="color:var(--text3);font-size:12px">—</span>'}</td>
           <td class="td-mono" style="font-size:11px;color:var(--text3)">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-AU') : '—'}</td>
           <td>
             <div style="display:flex;flex-direction:column;gap:4px">
-              ${!u.is_super_admin ? `<button class="btn btn-ghost btn-sm" onclick="adminToggleSuperAdmin('${u.id}',true)">Make Admin</button>` : `<button class="btn btn-ghost btn-sm" onclick="adminToggleSuperAdmin('${u.id}',false)">Revoke Admin</button>`}
-              ${!isSelf ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="adminDeleteUser('${u.id}','${u.full_name || u.email}')">🗑 Delete User</button>` : ''}
+              ${!u.is_super_admin ? `<button class="btn btn-ghost btn-sm" onclick="App.adminToggleSuperAdmin('${u.id}',true)">Make Admin</button>` : `<button class="btn btn-ghost btn-sm" onclick="App.adminToggleSuperAdmin('${u.id}',false)">Revoke Admin</button>`}
+              ${!isSelf ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.adminDeleteUser('${u.id}','${u.full_name || u.email}')">🗑 Delete User</button>` : ''}
             </div>
           </td>
         </tr>`;

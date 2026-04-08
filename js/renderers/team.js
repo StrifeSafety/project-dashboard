@@ -26,7 +26,7 @@ export async function renderTeam(sub) {
         <div class="page-banner-icon">👤</div>
         <div><h2>Team Members</h2><p>Everyone in this workspace.</p></div>
         <div style="margin-left:auto">
-          <button class="btn btn-primary" onclick="switchSubtab(1)">+ Invite Member</button>
+          <button class="btn btn-primary" onclick="App.switchSubtab(1)">+ Invite Member</button>
         </div>
       </div>
       <div class="table-card">
@@ -45,7 +45,7 @@ export async function renderTeam(sub) {
             <td class="td-mono" style="font-size:11px;color:var(--text3)">${m.email}</td>
             <td><span class="badge ${m.role === 'owner' ? 'b-yellow' : m.role === 'admin' ? 'b-accent' : 'b-grey'}">${m.role}</span></td>
             <td class="td-mono" style="font-size:11px;color:var(--text3)">${m.created_at ? new Date(m.created_at).toLocaleDateString('en-AU') : '—'}</td>
-            <td>${isOwner && m.id !== profile?.id && m.role !== 'owner' ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeMember('${m.memberId}','${m.full_name || m.email}')">Remove</button>` : ''}</td>
+            <td>${isOwner && m.id !== profile?.id && m.role !== 'owner' ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.removeMember('${m.memberId}','${m.full_name || m.email}')">Remove</button>` : ''}</td>
           </tr>`).join('')}
         </tbody></table>
       </div>
@@ -78,7 +78,7 @@ export async function renderTeam(sub) {
             `).join('')}
           </select>
         </div>
-        <button class="btn btn-primary" style="margin-bottom:1px" onclick="sendInvite()">Send Invite</button>
+        <button class="btn btn-primary" style="margin-bottom:1px" onclick="App.sendInvite()">Send Invite</button>
       </div>
       <div id="invite-feedback" style="padding:0 18px 16px;font-size:13px;display:none"></div>
     </div>
@@ -100,7 +100,7 @@ export async function renderTeam(sub) {
             ${i.expires_at ? (() => { const h = Math.max(0, Math.round((new Date(i.expires_at) - new Date()) / 3600000)); return h < 1 ? 'Expiring soon' : h + 'h remaining'; })() : '48h'}
           </td>
           <td><input class="fi" style="font-size:10px;font-family:'DM Mono',monospace" value="${link}" readonly onclick="this.select()"/></td>
-          <td><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="cancelInvite('${i.id}')">Rescind</button></td>
+          <td><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.cancelInvite('${i.id}')">Rescind</button></td>
         </tr>`;
       }).join('')}
       </tbody></table>

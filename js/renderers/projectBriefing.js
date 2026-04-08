@@ -41,14 +41,14 @@ export function renderMeetingsBox(projectName, pid) {
   const fmtTime = t => { if (!t) return ''; const [h, mn] = t.split(':').map(Number); const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 || 12; return `${h12}:${String(mn).padStart(2,'0')} ${ampm}`; };
   const modeBtn = (label, mode) =>
     `<button class="vs-btn ${AppState.meetingViewMode === mode ? 'active' : ''}"
-      onclick="AppState.meetingViewMode='${mode}';openProjectBriefing('${pid}')">${label}</button>`;
+      onclick="AppState.meetingViewMode='${mode}';App.openProjectBriefing('${pid}')">${label}</button>`;
 
   const header = `
     <div class="table-header table-title-sticky" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div class="table-title">📅 Meetings <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3)">${projMeetings.length}</span></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div class="view-switcher">${modeBtn('≡ List', 'list')}${modeBtn('⊞ Calendar', 'calendar')}</div>
-        <button class="btn btn-primary btn-sm" onclick="openAddMeetingForProject('${projectName}','${pid}')">+ Meeting</button>
+        <button class="btn btn-primary btn-sm" onclick="App.openAddMeetingForProject('${projectName}','${pid}')">+ Meeting</button>
       </div>
     </div>`;
 
@@ -59,7 +59,7 @@ export function renderMeetingsBox(projectName, pid) {
 
     const upcoming = projMeetings.filter(m => m.date >= todayStr);
     const past = projMeetings.filter(m => m.date < todayStr);
-    const row = m => `<tr onclick="openDetail('meeting',${safeJSON(m)})">
+    const row = m => `<tr onclick="App.openDetail('meeting',${safeJSON(m)})">
       <td style="padding:10px 14px">
         <div style="font-size:13px;font-weight:500;color:${m.date < todayStr ? 'var(--text2)' : 'var(--text)'}">${m.name}</div>
         ${m.nextSteps ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">↪ ${m.nextSteps}</div>` : ''}
@@ -77,7 +77,7 @@ export function renderMeetingsBox(projectName, pid) {
         ${past.length ? `
           <tr><td colspan="5" style="padding:0">
             <div class="gh-inner" style="cursor:pointer;user-select:none;justify-content:space-between"
-              onclick="AppState.pastMeetingsOpen=!AppState.pastMeetingsOpen;openProjectBriefing('${pid}')">
+              onclick="AppState.pastMeetingsOpen=!AppState.pastMeetingsOpen;App.openProjectBriefing('${pid}')">
               <span style="display:flex;align-items:center;gap:7px">
                 Past Meetings
                 <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--surface3);padding:1px 5px;border-radius:8px;font-weight:400">${past.length}</span>
@@ -122,7 +122,7 @@ export function renderMeetingsBox(projectName, pid) {
           ${futureMonthKeys.map(mk => {
       const label = new Date(mk + '-01').toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
       const mtgs = futureByMonth[mk];
-      return `<div style="margin-top:4px"><span style="opacity:.7">${label}:</span> ${mtgs.map(m => `<strong style="cursor:pointer;text-decoration:underline" onclick="AppState.meetingViewMode='calendar';AppState.meetingCalMonth='${mk}';openProjectBriefing('${pid}')">${m.name}</strong> (${fmtDate(m.date)}${m.time ? ' @ ' + fmtTime(m.time) : ''}${m.duration ? ' · ' + m.duration : ''})`).join(', ')}</div>`;
+      return `<div style="margin-top:4px"><span style="opacity:.7">${label}:</span> ${mtgs.map(m => `<strong style="cursor:pointer;text-decoration:underline" onclick="AppState.meetingViewMode='calendar';AppState.meetingCalMonth='${mk}';App.openProjectBriefing('${pid}')">${m.name}</strong> (${fmtDate(m.date)}${m.time ? ' @ ' + fmtTime(m.time) : ''}${m.duration ? ' · ' + m.duration : ''})`).join(', ')}</div>`;
     }).join('')}
         </div>
       </div>` : '';
@@ -155,9 +155,9 @@ export function renderMeetingsBox(projectName, pid) {
     <div style="padding:14px 18px">
       ${nextNotice}
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <button class="btn btn-ghost btn-sm" onclick="AppState.meetingCalMonth='${prevK}';openProjectBriefing('${pid}')">← Prev</button>
+        <button class="btn btn-ghost btn-sm" onclick="AppState.meetingCalMonth='${prevK}';App.openProjectBriefing('${pid}')">← Prev</button>
         <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">${monthLabel}</span>
-        <button class="btn btn-ghost btn-sm" onclick="AppState.meetingCalMonth='${nextK}';openProjectBriefing('${pid}')">Next →</button>
+        <button class="btn btn-ghost btn-sm" onclick="AppState.meetingCalMonth='${nextK}';App.openProjectBriefing('${pid}')">Next →</button>
       </div>
       <div class="mcal-grid">
         ${DOW.map(d => `<div class="mcal-dow">${d}</div>`).join('')}
@@ -282,7 +282,7 @@ export async function renderProjectBriefing(id) {
         const hasNoDates = !t.startDate && !t.due;
         const isMilestone = t.startDate && t.due && t.startDate === t.due;
         const progress = calcProgress(t);
-        rowsHtml += `<tr class="gantt-task-row" onclick="openDetail('task',${safeJSON(t)})">
+        rowsHtml += `<tr class="gantt-task-row" onclick="App.openDetail('task',${safeJSON(t)})">
             <td class="gantt-label-cell"><div style="display:flex;align-items:center;gap:6px;padding-left:16px">
               ${isMilestone ? `<span style="font-size:10px;color:${bar.color}">♦</span>` : `<span style="width:8px;height:8px;border-radius:50%;background:${bar.color};flex-shrink:0"></span>`}
               <span style="font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span>
@@ -311,12 +311,12 @@ export async function renderProjectBriefing(id) {
               <span>From</span>
               <input type="date" id="gantt-from" value="${toInputDate(rangeStart)}"
                 style="background:var(--surface3);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:4px 8px;border-radius:var(--rs);outline:none"
-                onchange="AppState.ganttRangeStart=this.value;openProjectBriefing('${p.id}')"/>
+                onchange="AppState.ganttRangeStart=this.value;App.openProjectBriefing('${p.id}')"/>
               <span>To</span>
               <input type="date" id="gantt-to" value="${toInputDate(rangeEnd)}"
                 style="background:var(--surface3);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:4px 8px;border-radius:var(--rs);outline:none"
-                onchange="AppState.ganttRangeEnd=this.value;openProjectBriefing('${p.id}')"/>
-              <button class="btn btn-ghost btn-sm" onclick="AppState.ganttRangeStart=null;AppState.ganttRangeEnd=null;openProjectBriefing('${p.id}')">↺ Reset</button>
+                onchange="AppState.ganttRangeEnd=this.value;App.openProjectBriefing('${p.id}')"/>
+              <button class="btn btn-ghost btn-sm" onclick="AppState.ganttRangeStart=null;AppState.ganttRangeEnd=null;App.openProjectBriefing('${p.id}')">↺ Reset</button>
             </div>
             <div style="display:flex;gap:10px;align-items:center">
               <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)"><span style="width:10px;height:4px;border-radius:2px;background:var(--green);display:inline-block"></span>Complete</span>
@@ -379,7 +379,7 @@ export async function renderProjectBriefing(id) {
 
   return `<div style="padding:20px 24px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <button class="pb-back" onclick="AppState.ganttRangeStart=null;AppState.ganttRangeEnd=null;AppState.currentBriefingId=null;renderContent()">← Back to Projects</button>
+      <button class="pb-back" onclick="AppState.ganttRangeStart=null;AppState.ganttRangeEnd=null;AppState.currentBriefingId=null;App.renderContent()">← Back to Projects</button>
       <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--yellow);letter-spacing:.6px;text-transform:uppercase">Project Briefing</div>
       <div style="width:120px"></div>
     </div>
@@ -408,8 +408,8 @@ export async function renderProjectBriefing(id) {
           </div>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-ghost btn-sm" onclick="openEditForm('project','${p.id}')">✎ Edit</button>
-          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openDeleteModal('project','${p.id}')">🗑 Delete</button>
+          <button class="btn btn-ghost btn-sm" onclick="App.openEditForm('project','${p.id}')">✎ Edit</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.openDeleteModal('project','${p.id}')">🗑 Delete</button>
         </div>
       </div>
       <div style="margin-bottom:4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px">Tasks Completed</div>
@@ -440,7 +440,7 @@ export async function renderProjectBriefing(id) {
         </div>
       </div>
       <div class="table-card" style="margin-bottom:0">
-        <div class="table-header"><div class="table-title">💰 Budget Summary</div><button class="btn btn-ghost btn-sm" onclick="switchTab('budgets')">View all</button></div>
+        <div class="table-header"><div class="table-title">💰 Budget Summary</div><button class="btn btn-ghost btn-sm" onclick="App.switchTab('budgets')">View all</button></div>
         <div style="padding:14px 18px">
           ${(() => {
             const projectTarget = p.target || 0;
@@ -475,10 +475,10 @@ export async function renderProjectBriefing(id) {
 
     ${projStk.length ? `
     <div class="table-card" style="margin-bottom:16px">
-      <div class="table-header table-title-sticky"><div class="table-title">👥 Project Team</div><button class="btn btn-ghost btn-sm" onclick="switchTab('stakeholders')">View all</button></div>
+      <div class="table-header table-title-sticky"><div class="table-title">👥 Project Team</div><button class="btn btn-ghost btn-sm" onclick="App.switchTab('stakeholders')">View all</button></div>
       <table><thead class="table-thead-sticky"><tr><th>Name</th><th>Role</th><th>Company</th><th>Category</th><th>Contact</th><th>Email</th></tr></thead>
       <tbody>${projStk.map(s => `
-        <tr onclick="openDetail('stakeholder',${safeJSON(s)})">
+        <tr onclick="App.openDetail('stakeholder',${safeJSON(s)})">
           <td class="td-main"><span style="display:flex;align-items:center;gap:8px">
             <span style="width:26px;height:26px;border-radius:50%;background:${avatarColor(s.name)}22;color:${avatarColor(s.name)};display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">${initials(s.name)}</span>
             ${s.name}
@@ -497,7 +497,7 @@ export async function renderProjectBriefing(id) {
     <div class="table-card" style="margin-bottom:16px">
       <div class="table-header table-title-sticky">
         <div class="table-title">✅ Tasks <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3)">${projTasks.length} tasks</span></div>
-        <button class="btn btn-primary btn-sm" onclick="openAddTaskForProject('${p.name}')">+ Add Task</button>
+        <button class="btn btn-primary btn-sm" onclick="App.openAddTaskForProject('${p.name}')">+ Add Task</button>
       </div>
       ${projTasks.length ? `
       <table><thead class="table-thead-sticky"><tr><th>Task</th><th>Phase</th><th>Status</th><th>Priority</th><th>Progress</th><th>Due Date</th><th>Hours</th></tr></thead>

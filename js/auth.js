@@ -107,7 +107,7 @@ export async function renderAuthScreen(mode = 'login') {
         history.replaceState({ tab: 'dashboard', sub: 0, briefingId: null }, '', '#dashboard');
         await loadWorkspaces();
         await loadData();
-        window.__initApp();
+        window.App.__initApp();
       }, 1500);
     });
     return;
@@ -129,7 +129,7 @@ export async function renderAuthScreen(mode = 'login') {
     const errEl = screen.querySelector('#loginError');
     if (!email) { showError(errEl, 'Enter your email above first.'); return; }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://project-dashboard-8iqo.onrender.com'
+      redirectTo: 'https://strifesafety-dashboard.onrender.com'
     });
     if (error) { showError(errEl, error.message); return; }
     showError(errEl, '✓ Password reset email sent. Check your inbox.');
@@ -170,7 +170,7 @@ export async function renderAuthScreen(mode = 'login') {
     history.replaceState({ tab: 'dashboard', sub: 0, briefingId: null }, '', '#dashboard');
     await loadWorkspaces();
     await loadData();
-    window.__initApp();
+    window.App.__initApp();
   });
 
   // Signup
@@ -204,7 +204,7 @@ export async function renderAuthScreen(mode = 'login') {
 
     if (signUpError) { showError(errEl, signUpError.message); btn.disabled = false; btn.textContent = 'Create Account'; return; }
     // Store org name temporarily for workspace creation after confirmation
-    localStorage.setItem('pendingWorkspace', orgName);fredirectTo: 'https://strifesafety-dashboard.onrender.com'
+    localStorage.setItem('pendingWorkspace', orgName);
     localStorage.setItem('pendingFullName', fullName);
     // Show success message — user must confirm email before signing in
     screen.querySelector('.auth-card').innerHTML = `
@@ -243,7 +243,7 @@ export async function renderAuthScreen(mode = 'login') {
           history.replaceState({ tab: 'dashboard', sub: 0, briefingId: null }, '', '#dashboard');
           await loadWorkspaces();
           await loadData();
-          window.__initApp();
+          window.App.__initApp();
         }
       }, 1500);
     } else {

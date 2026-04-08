@@ -25,7 +25,7 @@ export async function renderBudgets(sub) {
   const under = list.filter(b => b.spend < b.target).length;
 
   return `<div style="padding:20px 24px">
-    <div class="page-banner"><div class="page-banner-icon">💰</div><div><h2>${sub === 0 ? 'Active Budgets' : sub === 1 ? 'Closed Budgets' : 'All Budgets'}</h2><p>Track spend vs target budget across all projects and milestones.</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="openAddForm('budget')">+ New Budget</button></div></div>
+    <div class="page-banner"><div class="page-banner-icon">💰</div><div><h2>${sub === 0 ? 'Active Budgets' : sub === 1 ? 'Closed Budgets' : 'All Budgets'}</h2><p>Track spend vs target budget across all projects and milestones.</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="App.openAddForm('budget')">+ New Budget</button></div></div>
     <div class="dash-grid" style="margin-bottom:16px">
       <div class="kpi-card"><div class="kpi-label">Total Target Budget</div><div class="kpi-value" style="font-size:20px;color:var(--accent)">${fmtCur(totalTarget)}</div></div>
       <div class="kpi-card"><div class="kpi-label">Total Spend</div><div class="kpi-value" style="font-size:20px;color:${totalSpend > totalTarget ? 'var(--red)' : 'var(--green)'}">${fmtCur(totalSpend)}</div></div>
@@ -44,7 +44,7 @@ export async function renderBudgets(sub) {
       <table><thead class="table-thead-sticky"><tr><th>Budget</th><th>Project</th><th>Milestone</th><th>Type</th><th>Target Budget</th><th>Spend</th><th>Variance</th><th>Status</th></tr></thead>
       <tbody>${list.map(b => {
     const v = b.spend - b.target;
-    return `<tr onclick="openDetail('budget',${safeJSON(b)})">
+    return `<tr onclick="App.openDetail('budget',${safeJSON(b)})">
           <td class="td-main"><span>${b.name}</span></td>
           <td><span class="ptag"><span class="pdot" style="background:${pColor(b.project)}"></span>${b.project || '—'}</span></td>
           <td style="font-size:12px;color:var(--text2)">${b.milestone || '—'}</td>

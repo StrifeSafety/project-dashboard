@@ -416,11 +416,11 @@ function bindDocActions() {
     btn.addEventListener('click', () => {
       const id = btn.dataset.deleteId;
       const fileName = btn.dataset.deleteFile;
-      openDeleteModal('doc', id, 'this document');
+      App.openDeleteModal('doc', id, 'this document');
       // Override the confirm button to also delete from Supabase storage
       const confirmBtn = document.getElementById('deleteModalConfirmBtn');
       confirmBtn.onclick = async () => {
-        closeDeleteModal();
+        App.closeDeleteModal();
         try {
           await deleteDocument(id, fileName);
           const row = btn.closest('tr');
