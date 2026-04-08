@@ -226,7 +226,7 @@ export async function renderDocuments(sub) {
     if (tbody) tbody.innerHTML = renderDocRows(filtered);
     const count = document.getElementById('docCount');
     if (count) count.textContent = `${filtered.length} document${filtered.length !== 1 ? 's' : ''}`;
-    bindDocActions();
+    bindDocActions(sub);
   });
 
   /* ── UPLOAD FORM ── */
@@ -341,7 +341,7 @@ export async function renderDocuments(sub) {
     }
   });
 
-  bindDocActions();
+  bindDocActions(sub);
 }
 
 /* ── RENDER DOCUMENT ROWS ── */
@@ -384,7 +384,7 @@ function renderDocRows(list) {
 }
 
 /* ── BIND DELETE AND PREVIEW ACTIONS ── */
-function bindDocActions() {
+function bindDocActions(sub) {
   /* Preview toggle */
   document.querySelectorAll('[data-preview-url]').forEach(btn => {
     btn.addEventListener('click', () => {
