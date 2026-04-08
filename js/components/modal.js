@@ -47,10 +47,15 @@ export async function openDetail(type, obj) {
         if (!obj.id) return '';
         const { data } = await supabase.from('documents').select('*').eq('linked_task_id', obj.id);
         if (!data || !data.length) return '';
-        return `<div class="fg"><div class="dk">Linked Documents</div><div class="dv">${data.map(d => `
+        const docsWithUrls = await Promise.all(data.map(async d => {
+          if (!d.file_name) return { ...d, signed_url: null };
+          const { data: urlData } = await supabase.storage.from('documents').createSignedUrl(d.file_name, 3600);
+          return { ...d, signed_url: urlData?.signedUrl || null };
+        }));
+        return `<div class="fg"><div class="dk">Linked Documents</div><div class="dv">${docsWithUrls.map(d => `
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
             <span style="font-size:16px">📄</span>
-            <a href="${d.file_url}" target="_blank" style="color:var(--accent);text-decoration:underline;font-size:13px;font-weight:500">${d.name}</a>
+            <a href="${d.signed_url || d.file_url}" target="_blank" style="color:var(--accent);text-decoration:underline;font-size:13px;font-weight:500">${d.name}</a>
             ${d.revision ? `<span style="font-size:11px;color:var(--text3)">${d.revision}</span>` : ''}
             <span class="badge ${d.status === 'Current' ? 'b-green' : d.status === 'Superseded' ? 'b-grey' : 'b-yellow'}" style="font-size:9px">${d.status || 'Draft'}</span>
           </div>`).join('')}</div></div>`;
