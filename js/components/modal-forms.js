@@ -60,7 +60,7 @@ function buildForm(type, d = {}) {
     <div class="fg"><label class="fl">Interim Action</label><textarea class="fta" id="f-interimAction" placeholder="Short term or temporary action…">${d.interimAction || ''}</textarea></div>
     <div class="fg"><label class="fl">Final Action</label><textarea class="fta" id="f-finalAction" placeholder="Permanent or long term action…">${d.finalAction || ''}</textarea></div>
     <div class="fg-grid">
-      <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p" onchange="App.rebuildTaskBudgetList(this.value)"/><datalist id="dl-p">${projOpts}</datalist></div>
+      <div class="fg"><label class="fl">Project</label><select class="fs" id="f-project" onchange="App.rebuildTaskBudgetList(this.value)"><option value="">— Select project —</option>${projOpts}</select></div>
       <div class="fg"><label class="fl">Phase</label><select class="fs" id="f-phase"><option value="">— Select —</option>${phOpts}</select></div>
       <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option${d.status === 'Not Started' ? ' selected' : ''}>Not Started</option><option${d.status === 'In Progress' ? ' selected' : ''}>In Progress</option><option${d.status === 'Complete' ? ' selected' : ''}>Complete</option><option${d.status === 'On Hold' ? ' selected' : ''}>On Hold</option></select></div>
       <div class="fg"><label class="fl">Priority</label><select class="fs" id="f-priority"><option value="">— None —</option><option${d.priority === 'High' ? ' selected' : ''}>High</option><option${d.priority === 'Medium' ? ' selected' : ''}>Medium</option><option${d.priority === 'Low' ? ' selected' : ''}>Low</option></select></div>
@@ -91,7 +91,7 @@ function buildForm(type, d = {}) {
   if (type === 'doc') return `
     <div class="fg-grid">
       <div class="fg"><label class="fl">Document Name *</label><input class="fi" id="f-name" value="${d.name || ''}" placeholder="e.g. Project Charter"/></div>
-      <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p"/><datalist id="dl-p">${projOpts}</datalist></div>
+      <div class="fg"><label class="fl">Project</label><select class="fs" id="f-project"><option value="">— Select project —</option>${projOpts}</select></div>
       <div class="fg"><label class="fl">Phase</label><select class="fs" id="f-phase"><option value="">— Select —</option>${phOpts}</select></div>
       <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option${d.status === 'Draft' ? ' selected' : ''}>Draft</option><option${d.status === 'Current' ? ' selected' : ''}>Current</option><option${d.status === 'Superseded' ? ' selected' : ''}>Superseded</option></select></div>
     </div>
@@ -123,7 +123,7 @@ function buildForm(type, d = {}) {
       <div class="fg"><label class="fl">Industry</label><input class="fi" id="f-industry" value="${d.industry || ''}" placeholder="e.g. Finance"/></div>
       <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="f-email" value="${d.email || ''}" placeholder="email@domain.com"/></div>
       <div class="fg"><label class="fl">Phone</label><input class="fi" id="f-phone" value="${d.phone || ''}" placeholder="000-000-0000"/></div>
-      <div class="fg"><label class="fl">Project</label><input class="fi" id="f-project" value="${d.project || ''}" list="dl-p"/><datalist id="dl-p">${projOpts}</datalist></div>
+      <div class="fg"><label class="fl">Project</label><select class="fs" id="f-project"><option value="">— Select project —</option>${projOpts}</select></div>
     </div>
     <div class="modal-foot"><button class="btn btn-ghost" onclick="App.closeOverlay('addModal')">Cancel</button><button class="btn btn-primary" onclick="App.saveForm('stakeholder')">Save Stakeholder</button></div>`;
 
