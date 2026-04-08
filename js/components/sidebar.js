@@ -82,14 +82,17 @@ export function renderSidebar() {
     </div>
   `;
 
-  /* Delegated event listener — replaces all inline onclick handlers on sidebar buttons */
-  sb.addEventListener('click', e => {
-    const btn = e.target.closest('.sb-item');
-    if (!btn) return;
-    if (btn.dataset.filterProject !== undefined) {
-      sbFilter(btn.dataset.filterProject || null);
-    } else if (btn.dataset.filterStatus !== undefined) {
-      sbStatusFilter(btn.dataset.filterStatus);
-    }
-  });
+  /* Delegated event listener — only bind once */
+  if (!sb._listenerBound) {
+    sb._listenerBound = true;
+    sb.addEventListener('click', e => {
+      const btn = e.target.closest('.sb-item');
+      if (!btn) return;
+      if (btn.dataset.filterProject !== undefined) {
+        sbFilter(btn.dataset.filterProject || null);
+      } else if (btn.dataset.filterStatus !== undefined) {
+        sbStatusFilter(btn.dataset.filterStatus);
+      }
+    });
+  }
 }
