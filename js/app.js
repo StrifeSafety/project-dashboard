@@ -354,6 +354,6 @@ window.App.__initApp = initApp;
   } else {
     await loadWorkspaces();
     await loadData();
-    window.__initApp();
+    window.App.__initApp();
   }
 })();
