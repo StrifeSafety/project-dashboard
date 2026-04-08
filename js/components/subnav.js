@@ -8,6 +8,6 @@ import { switchSubtab } from '../router.js';
 export function renderSubnav() {
   const sn = TABS[AppState.currentTab]?.subnav || [];
   document.getElementById('subnav').innerHTML = sn.map((s, i) =>
-    `<button class="subnav-tab${i === AppState.currentSubtab ? ' active' : ''}" onclick="switchSubtab(${i})">${s}</button>`
+    `<button class="subnav-tab${i === AppState.currentSubtab ? ' active' : ''}" onclick="App.switchSubtab(${i})">${s}</button>`
   ).join('');
 }
