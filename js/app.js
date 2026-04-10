@@ -119,7 +119,7 @@ window.App.renderWorkspaceSwitcher = function() {
         <div class="ws-option${w.id === AppState.currentWorkspaceId ? ' active' : ''}" onclick="App.switchWorkspace('${w.id}')">
           <span class="ws-dot"></span>
           <span>${w.name}</span>
-          ${w.role === 'owner' ? '<span style="font-family:\'DM Mono\',monospace;font-size:9px;opacity:.5">owner</span>' : ''}
+          ${w.role === 'owner' ? `<span style="font-family:'DM Mono',monospace;font-size:9px;opacity:.5">owner</span><span onclick="event.stopPropagation();App.adminDeleteWorkspace('${w.id}','${w.name}')" style="font-size:11px;color:var(--red);margin-left:auto;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:.7" title="Delete workspace">🗑</span>` : ''}
         </div>`).join('')}
       <div class="ws-divider"></div>
       <div class="ws-option" onclick="App.createNewWorkspace()">
