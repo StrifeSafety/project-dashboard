@@ -176,19 +176,71 @@ window.App.adminRemoveFromWorkspace = async (memberId, userName, wsName) => {
   document.getElementById('deleteModal').classList.add('open');
 };
 window.App.adminDeleteWorkspace = async (id, name) => {
-  document.getElementById('deleteModalMsg').textContent = `Are you sure you want to delete the workspace "${name}" and ALL its data? This cannot be undone.`;
-  document.getElementById('deleteModalConfirmBtn').onclick = async () => {
-    window.App.closeDeleteModal();
-    await supabase.from('profiles').update({ organisation_id: null }).eq('organisation_id', id);
-    await supabase.from('invites').delete().eq('workspace_id', id);
-    await supabase.from('workspace_members').delete().eq('workspace_id', id);
-    await supabase.from('workspaces').delete().eq('id', id);
-    toast('🗑 Workspace deleted');
-    await loadWorkspaces();
-    renderContent();
-    window.App.renderWorkspaceSwitcher();
+  const dd = document.getElementById('wsDropdown');
+  if (dd) dd.style.display = 'none';
+
+  let modal = document.getElementById('wsDeleteModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'wsDeleteModal';
+    modal.className = 'overlay';
+    modal.innerHTML = `<div class="modal" style="max-width:440px">
+      <div class="modal-hd">
+        <h2 class="modal-title" style="color:var(--red)">⚠ Delete Workspace</h2>
+        <button class="modal-x" onclick="document.getElementById('wsDeleteModal').classList.remove('open')">✕</button>
+      </div>
+      <div style="padding:20px 24px">
+        <p style="font-size:14px;color:var(--text2);margin-bottom:8px;line-height:1.6">This will permanently delete the workspace and <strong>all its data</strong> including projects, tasks, budgets, documents, meetings, and stakeholders. This cannot be undone.</p>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:16px">Type the workspace name to confirm:</p>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:8px 12px;font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);margin-bottom:16px" id="wsDeleteNameDisplay"></div>
+        <input class="fi" id="wsDeleteConfirmInput" placeholder="Type workspace name here…" style="margin-bottom:16px"/>
+        <div id="wsDeleteError" style="font-size:12px;color:var(--red);margin-bottom:12px;display:none">Name does not match. Please try again.</div>
+        <div class="modal-foot" style="padding:0">
+          <button class="btn btn-ghost" onclick="document.getElementById('wsDeleteModal').classList.remove('open')">Cancel</button>
+          <button class="btn btn-primary" id="wsDeleteConfirmBtn" style="background:var(--red);border-color:var(--red)">Delete Workspace</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('wsDeleteNameDisplay').textContent = name;
+  document.getElementById('wsDeleteConfirmInput').value = '';
+  document.getElementById('wsDeleteError').style.display = 'none';
+  modal.classList.add('open');
+
+  document.getElementById('wsDeleteConfirmBtn').onclick = async () => {
+    const typed = document.getElementById('wsDeleteConfirmInput').value.trim();
+    if (typed !== name) {
+      document.getElementById('wsDeleteError').style.display = 'block';
+      return;
+    }
+    modal.classList.remove('open');
+    toast('⏳ Deleting workspace...');
+    try {
+      await supabase.from('tasks').delete().eq('workspace_id', id);
+      await supabase.from('projects').delete().eq('workspace_id', id);
+      await supabase.from('budgets').delete().eq('workspace_id', id);
+      await supabase.from('meetings').delete().eq('workspace_id', id);
+      await supabase.from('stakeholders').delete().eq('workspace_id', id);
+      await supabase.from('documents').delete().eq('workspace_id', id);
+      await supabase.from('profiles').update({ organisation_id: null }).eq('organisation_id', id);
+      await supabase.from('invites').delete().eq('workspace_id', id);
+      await supabase.from('workspace_members').delete().eq('workspace_id', id);
+      await supabase.from('workspaces').delete().eq('id', id);
+      toast('🗑 Workspace deleted');
+      await loadWorkspaces();
+      AppState.currentTab = 'dashboard';
+      AppState.currentBriefingId = null;
+      await loadData();
+      renderContent();
+      renderSidebar();
+      window.App.renderWorkspaceSwitcher();
+    } catch (err) {
+      console.error('Workspace delete error:', err);
+      toast('⚠ Error deleting workspace: ' + err.message);
+    }
   };
-  document.getElementById('deleteModal').classList.add('open');
 };
 
 window.App.adminToggleSuperAdmin = async (userId, value) => {
@@ -284,6 +336,8 @@ function initApp() {
     if (e.target.classList.contains('overlay')) {
       closeOverlay('addModal');
       closeOverlay('detailModal');
+      const wsModal = document.getElementById('wsDeleteModal');
+      if (wsModal) wsModal.classList.remove('open');
     }
   });
 
