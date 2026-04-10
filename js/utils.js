@@ -157,3 +157,18 @@ export const fmtLastContact = s => {
   if (diff === 1) return '1 day ago';
   return diff + ' days ago';
 };
+
+/* Shared loading state */
+export const renderLoading = (message = 'Loading...') => `
+  <div style="padding:60px;text-align:center;color:var(--text3);font-size:13px">
+    <div style="font-size:28px;margin-bottom:12px;animation:spin 1s linear infinite;display:inline-block">⏳</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)">${message}</div>
+  </div>`;
+
+/* Shared empty state */
+export const renderEmpty = (icon = '📭', title = 'Nothing here yet', message = '') => `
+  <div class="empty">
+    <div class="empty-icon">${icon}</div>
+    <div class="empty-title">${title}</div>
+    ${message ? `<div style="font-size:13px;color:var(--text3);margin-top:6px">${message}</div>` : ''}
+  </div>`;

@@ -1,6 +1,6 @@
 import { AppState } from '../state.js';
 import { DATA } from '../storage.js';
-import { isOverdue, fmtDate, pCol, pColor, statusBadge, priBadge, pBar, safeJSON, statusIcon, taskDateStatus, fmtCur, calcProgress } from '../utils.js';
+import { isOverdue, fmtDate, pCol, pColor, statusBadge, priBadge, pBar, safeJSON, statusIcon, taskDateStatus, fmtCur, calcProgress, renderEmpty } from '../utils.js';
 import { openDetail, openAddForm } from '../components/modal.js';
 import { switchSubtab } from '../router.js';
 
@@ -85,7 +85,7 @@ export async function renderTasks(sub) {
       const cards = list.filter(t => t.status === s);
       return `<div class="kb-col">
             <div class="kb-head"><span class="kb-title" style="color:${scols[s]}">${statusIcon(s)} ${s}</span><span class="kb-cnt">${cards.length}</span></div>
-            <div class="kb-cards">${cards.map(t => `
+            <div class="kb-cards">${cards.length ? cards.map(t => `
               <div class="kb-card" onclick="App.openDetail('task',${safeJSON(t)})">
                 <div class="kb-card-title">${t.name}</div>
                 <div class="kb-card-meta"><span class="ptag" style="font-size:11px"><span class="pdot" style="background:${pColor(t.project)}"></span>${t.project || '—'}</span>${priBadge(t.priority)}</div>
@@ -98,7 +98,7 @@ export async function renderTasks(sub) {
                   <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3)">${t.hours ? t.hours + 'h' : '—'}</span>
                 </div>
               </div>
-            `).join('') || '<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Empty</div>'}</div>
+            `).join('') : renderEmpty('📭', 'Empty')}</div>
           </div>`;
     }).join('')}
       </div>

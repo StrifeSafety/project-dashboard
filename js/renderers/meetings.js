@@ -1,6 +1,6 @@
 import { AppState } from '../state.js';
 import { DATA } from '../storage.js';
-import { pColor, meetType, safeJSON } from '../utils.js';
+import { pColor, meetType, safeJSON, renderEmpty } from '../utils.js';
 import { openDetail, openAddForm } from '../components/modal.js';
 
 /* ══════════════════════════════════════════════════
@@ -40,7 +40,7 @@ export async function renderMeetings(sub) {
           </div>
           <div class="meeting-tags"><span class="badge ${meetType(m.type)}">${m.type}</span></div>
         </div>`;
-  }).join('') || '<div class="empty"><div class="empty-icon">📭</div><div class="empty-title">No meetings</div></div>'}
+  }).join('') || renderEmpty('📅', 'No meetings', 'Click + New Meeting to schedule one')}
     </div>
   </div>`;
 }

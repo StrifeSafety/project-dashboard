@@ -1,6 +1,6 @@
 import { AppState } from '../state.js';
 import { DATA } from '../storage.js';
-import { pColor, avatarColor, initials, safeJSON, fmtLastContact } from '../utils.js';
+import { pColor, avatarColor, initials, safeJSON, fmtLastContact, renderEmpty } from '../utils.js';
 import { openDetail, openAddForm } from '../components/modal.js';
 
 /* ══════════════════════════════════════════════════
@@ -16,7 +16,7 @@ export async function renderStakeholders(sub) {
   return `<div style="padding:20px 24px">
     <div class="page-banner"><div class="page-banner-icon">👥</div><div><h2>${sub === 0 ? 'All Stakeholders' : 'Team Members'}</h2><p>${sub === 0 ? 'Clients, team members, and all project stakeholders.' : 'Your internal project team.'}</p></div><div style="margin-left:auto"><button class="btn btn-primary" onclick="App.openAddForm('stakeholder')">+ Add Stakeholder</button></div></div>
     <div class="stk-grid">
-      ${list.map(s => `
+      ${list.length ? list.map(s => `
         <div class="stk-card" onclick="App.openDetail('stakeholder',${safeJSON(s)})">
           <div class="stk-avatar" style="background:${avatarColor(s.name)}22;color:${avatarColor(s.name)}">${initials(s.name)}</div>
           <div class="stk-info">
@@ -30,7 +30,7 @@ export async function renderStakeholders(sub) {
             <div class="stk-contact">📧 ${s.email}</div>
           </div>
         </div>
-      `).join('')}
+      `).join('') : renderEmpty('👥', 'No stakeholders yet', 'Click + Add Stakeholder to get started')}
     </div>
 
     <div class="table-card">

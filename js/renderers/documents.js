@@ -1,6 +1,6 @@
 import { AppState } from '../state.js';
 import { DATA } from '../storage.js';
-import { pColor } from '../utils.js';
+import { pColor, renderLoading, renderEmpty } from '../utils.js';
 import { supabase } from '../supabase.js';
 
 /* ══════════════════════════════════════════════════
@@ -114,9 +114,7 @@ async function updateDocument(id, updates) {
 export async function renderDocuments(sub) {
   const ca = document.getElementById('contentArea');
 
-  ca.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">
-    <div style="font-size:24px;margin-bottom:10px">⏳</div>Loading documents...
-  </div>`;
+  ca.innerHTML = renderLoading('Loading documents...');
 
   const rawDocs = await loadDocuments();
   const docs = await getSignedUrls(rawDocs);
@@ -204,11 +202,7 @@ export async function renderDocuments(sub) {
           ${renderDocRows(list)}
         </tbody>
       </table>` : `
-      <div class="empty" id="docEmpty">
-        <div class="empty-icon">📭</div>
-        <div class="empty-title">No documents yet</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:6px">Click <strong>+ Upload New Document</strong> to add your first file</div>
-      </div>`}
+      ${renderEmpty('📭', 'No documents yet', 'Click <strong>+ Upload New Document</strong> to add your first file')}`}
     </div>
   </div>`;
 

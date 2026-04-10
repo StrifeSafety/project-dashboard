@@ -1,6 +1,6 @@
 import { AppState } from '../state.js';
 import { DATA } from '../storage.js';
-import { pColor, fmtCur, budget_status, safeJSON } from '../utils.js';
+import { pColor, fmtCur, budget_status, safeJSON, renderEmpty } from '../utils.js';
 import { openDetail, openAddForm } from '../components/modal.js';
 
 /* ══════════════════════════════════════════════════
@@ -42,7 +42,7 @@ export async function renderBudgets(sub) {
     <div class="table-card">
       <div class="table-header table-title-sticky"><div class="table-title">💰 Budget Lines <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3)">${list.length} items</span></div></div>
       <table><thead class="table-thead-sticky"><tr><th>Budget</th><th>Project</th><th>Milestone</th><th>Type</th><th>Target Budget</th><th>Spend</th><th>Variance</th><th>Status</th></tr></thead>
-      <tbody>${list.map(b => {
+      <tbody>${list.length ? list.map(b => {
     const v = b.spend - b.target;
     return `<tr onclick="App.openDetail('budget',${safeJSON(b)})">
           <td class="td-main"><span>${b.name}</span></td>
@@ -54,7 +54,7 @@ export async function renderBudgets(sub) {
           <td class="td-mono" style="color:${v > 0 ? 'var(--red)' : v < 0 ? 'var(--green)' : 'var(--blue)'}">${v > 0 ? '−' : v < 0 ? '+' : ''}${fmtCur(Math.abs(v))}</td>
           <td>${budget_status(b)}</td>
         </tr>`;
-  }).join('')}</tbody></table>
+  }).join('') : `<tr><td colspan="8">${renderEmpty('💰', 'No budgets yet', 'Click + New Budget to add one')}</td></tr>`}</tbody></table>
     </div>
   </div>`;
 }
