@@ -226,7 +226,7 @@ export async function renderDocuments(sub) {
     if (tbody) tbody.innerHTML = renderDocRows(filtered);
     const count = document.getElementById('docCount');
     if (count) count.textContent = `${filtered.length} document${filtered.length !== 1 ? 's' : ''}`;
-    bindDocActions(sub);
+    bindDocActions(sub, filtered);
   });
 
   /* ── UPLOAD FORM ── */
@@ -341,7 +341,7 @@ export async function renderDocuments(sub) {
     }
   });
 
-  bindDocActions(sub);
+  bindDocActions(sub, list);
 }
 
 /* ── RENDER DOCUMENT ROWS ── */
@@ -384,22 +384,189 @@ function renderDocRows(list) {
 }
 
 /* ── BIND DELETE AND PREVIEW ACTIONS ── */
-function bindDocActions(sub) {
-  /* Preview toggle */
-  document.querySelectorAll('[data-preview-url]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.previewUrl;
-      const ext = btn.dataset.previewExt;
-      const name = btn.dataset.previewName;
-      const row = btn.closest('tr');
+function bindDocActions(sub, list) {
+  const tbody = document.getElementById('docTableBody');
+  if (!tbody || tbody._delegated) return;
+  tbody._delegated = true;
 
-      /* Check if preview row already exists */
+  tbody.addEventListener('click', async e => {
+    /* ── PREVIEW ── */
+    const previewBtn = e.target.closest('[data-preview-url]');
+    if (previewBtn) {
+      const url = previewBtn.dataset.previewUrl;
+      const ext = previewBtn.dataset.previewExt;
+      const name = previewBtn.dataset.previewName;
+      const row = previewBtn.closest('tr');
       const nextRow = row.nextElementSibling;
       if (nextRow && nextRow.dataset.previewRow) {
         nextRow.remove();
-        btn.textContent = '🔎 Preview';
+        previewBtn.textContent = '🔎 Preview';
         return;
       }
+      const previewRow = document.createElement('tr');
+      previewRow.dataset.previewRow = '1';
+      previewRow.innerHTML = `<td colspan="10" style="padding:0;background:var(--surface2)">
+        <div style="padding:16px 20px">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text2)">${name}</div>
+          ${IMAGE_TYPES.includes(ext)
+            ? `<img src="${url}" style="max-width:100%;max-height:500px;border-radius:var(--rs);object-fit:contain;display:block"/>`
+            : `<iframe src="${url}" style="width:100%;height:500px;border:none;border-radius:var(--rs)"></iframe>`}
+        </div>
+      </td>`;
+      row.after(previewRow);
+      previewBtn.textContent = '✕ Close';
+      return;
+    }
+
+    /* ── EDIT ── */
+    const editBtn = e.target.closest('[data-edit-id]');
+    if (editBtn) {
+      const id = editBtn.dataset.editId;
+      const row = editBtn.closest('tr');
+      const nextRow = row.nextElementSibling;
+      if (nextRow && nextRow.dataset.editRow) {
+        nextRow.remove();
+        editBtn.textContent = '✎ Edit';
+        return;
+      }
+      document.querySelectorAll('[data-edit-row]').forEach(r => r.remove());
+      document.querySelectorAll('[data-edit-id]').forEach(b => { if (b !== editBtn) b.textContent = '✎ Edit'; });
+
+      const editRow = document.createElement('tr');
+      editRow.dataset.editRow = '1';
+      editRow.innerHTML = `<td colspan="10" style="padding:0;background:var(--surface2);border-bottom:2px solid var(--accent)">
+        <div style="padding:20px 24px" id="editForm-${id}">
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;color:var(--accent)">✎ Edit Document</div>
+          <div class="fg-grid">
+            <div class="fg"><label class="fl">Document Name *</label><input class="fi" id="edit-name-${id}" value=""/></div>
+            <div class="fg"><label class="fl">Project</label><select class="fs" id="edit-project-${id}"><option value="">— No Project —</option>${DATA.projects.map(p => `<option value="${p.name}">${p.name}</option>`).join('')}</select></div>
+            <div class="fg"><label class="fl">Document Type</label><input class="fi" id="edit-type-${id}" value=""/></div>
+            <div class="fg"><label class="fl">Revision</label><input class="fi" id="edit-revision-${id}" value=""/></div>
+            <div class="fg"><label class="fl">Status</label><select class="fs" id="edit-status-${id}"><option>Draft</option><option>Current</option><option>Superseded</option></select></div>
+            <div class="fg"><label class="fl">Linked Task</label><select class="fs" id="edit-linked-task-${id}"><option value="">— No Task —</option></select></div>
+          </div>
+          <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="edit-notes-${id}"></textarea></div>
+          <div class="fg" style="margin-top:8px">
+            <label class="fl">Replace File <span style="font-size:10px;color:var(--text3)">(optional — leave blank to keep existing file)</span></label>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+              <input type="file" id="edit-file-${id}" accept="${ACCEPTED_TYPES}" style="font-size:12px;color:var(--text2);background:var(--surface3);border:1px solid var(--border);padding:6px 10px;border-radius:var(--rs);flex:1"/>
+              <span id="edit-file-status-${id}" style="font-size:11px;color:var(--text3)">No file selected</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <button class="btn btn-ghost" id="edit-cancel-${id}">Cancel</button>
+            <button class="btn btn-primary" id="edit-save-${id}">💾 Save Changes</button>
+          </div>
+        </div>
+      </td>`;
+      row.after(editRow);
+      editBtn.textContent = '✕ Close';
+
+      supabase.from('documents').select('*').eq('id', id).single().then(({ data: d }) => {
+        if (!d) return;
+        document.getElementById(`edit-name-${id}`).value = d.name || '';
+        document.getElementById(`edit-type-${id}`).value = d.doc_type || '';
+        document.getElementById(`edit-revision-${id}`).value = d.revision || '';
+        document.getElementById(`edit-notes-${id}`).value = d.notes || '';
+        const projSel = document.getElementById(`edit-project-${id}`);
+        if (d.project) projSel.value = d.project;
+        const statusSel = document.getElementById(`edit-status-${id}`);
+        if (d.status) statusSel.value = d.status;
+        const tasks = d.project ? DATA.tasks.filter(t => t.project === d.project) : DATA.tasks;
+        const taskSel = document.getElementById(`edit-linked-task-${id}`);
+        taskSel.innerHTML = `<option value="">— No Task —</option>` +
+          tasks.map(t => `<option value="${t.id}" data-name="${t.name}"${t.id === d.linked_task_id ? ' selected' : ''}>${t.name}</option>`).join('');
+        projSel.addEventListener('change', () => {
+          const pts = projSel.value ? DATA.tasks.filter(t => t.project === projSel.value) : DATA.tasks;
+          taskSel.innerHTML = `<option value="">— No Task —</option>` +
+            pts.map(t => `<option value="${t.id}" data-name="${t.name}">${t.name}</option>`).join('');
+        });
+      });
+
+      document.getElementById(`edit-file-${id}`).addEventListener('change', ev => {
+        const f = ev.target.files[0];
+        const status = document.getElementById(`edit-file-status-${id}`);
+        if (f) {
+          if (f.size > 30 * 1024 * 1024) { alert('File too large. Max 30MB.'); ev.target.value = ''; return; }
+          status.textContent = `${f.name} (${fmtSize(f.size)})`;
+          status.style.color = 'var(--green)';
+        } else {
+          status.textContent = 'No file selected';
+          status.style.color = 'var(--text3)';
+        }
+      });
+
+      document.getElementById(`edit-cancel-${id}`).addEventListener('click', () => {
+        editRow.remove();
+        editBtn.textContent = '✎ Edit';
+      });
+
+      document.getElementById(`edit-save-${id}`).addEventListener('click', async () => {
+        const saveBtn = document.getElementById(`edit-save-${id}`);
+        const name = document.getElementById(`edit-name-${id}`).value.trim();
+        if (!name) { alert('Document name is required.'); return; }
+        saveBtn.textContent = '⏳ Saving...';
+        saveBtn.disabled = true;
+        try {
+          const taskSel = document.getElementById(`edit-linked-task-${id}`);
+          const taskId = taskSel.value || null;
+          const taskName = taskId ? taskSel.options[taskSel.selectedIndex].dataset.name : null;
+          const projSel = document.getElementById(`edit-project-${id}`);
+          const updates = {
+            name,
+            project: projSel.value || null,
+            doc_type: document.getElementById(`edit-type-${id}`).value.trim() || null,
+            revision: document.getElementById(`edit-revision-${id}`).value.trim() || null,
+            status: document.getElementById(`edit-status-${id}`).value,
+            notes: document.getElementById(`edit-notes-${id}`).value.trim() || null,
+            linked_task_id: taskId,
+            linked_task_name: taskName,
+          };
+          const fileInput = document.getElementById(`edit-file-${id}`);
+          if (fileInput.files[0]) {
+            const { data: oldDoc } = await supabase.from('documents').select('file_name,file_size').eq('id', id).single();
+            const { fileName, fileUrl } = await uploadFile(fileInput.files[0]);
+            updates.file_name = fileName;
+            updates.file_url = fileUrl;
+            updates.file_size = fileInput.files[0].size;
+            if (oldDoc?.file_name) await deleteFile(oldDoc.file_name);
+          }
+          await updateDocument(id, updates);
+          editRow.remove();
+          await renderDocuments(sub);
+        } catch (err) {
+          console.error('Save error:', err);
+          alert('Save failed: ' + err.message);
+          saveBtn.textContent = '💾 Save Changes';
+          saveBtn.disabled = false;
+        }
+      });
+      return;
+    }
+
+    /* ── DELETE ── */
+    const deleteBtn = e.target.closest('[data-delete-id]');
+    if (deleteBtn) {
+      const id = deleteBtn.dataset.deleteId;
+      const fileName = deleteBtn.dataset.deleteFile;
+      App.openDeleteModal('doc', id, 'this document');
+      const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+      confirmBtn.onclick = async () => {
+        App.closeDeleteModal();
+        try {
+          await deleteDocument(id, fileName);
+          const row = deleteBtn.closest('tr');
+          const nextRow = row.nextElementSibling;
+          if (nextRow && nextRow.dataset.previewRow) nextRow.remove();
+          row.remove();
+        } catch (err) {
+          console.error('Delete error:', err);
+          alert('Delete failed: ' + err.message);
+        }
+      };
+    }
+  });
+}
 
       /* Create preview row */
       const previewRow = document.createElement('tr');
